@@ -1,0 +1,51 @@
+fieldset {
+  position: relative;
+  padding: 3rem 1rem 1rem;
+  margin: 0 0 1rem;
+}
+
+legend {
+  position: absolute;
+  top: 1rem;
+  padding: 0;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+input[type='text'],
+input[type='number'],
+input[type='email'],
+input[type='password'],
+select {
+  width: 100%;
+  max-width: 20rem;
+}
+
+.label-text {
+  display: block;
+  padding-bottom: 0.5rem;
+}
+
+.label-text-necessity {
+  font-weight: normal;
+}
+
+.field-error {
+  color: crimson;
+}
+
+.field-error-mark {
+  font-size: 85%;
+}
+
+.password-strength-weak {
+  color: crimson;
+}
+
+.password-strength-fair {
+  color: orange;
+}
+
+.password-strength-strong {
+  color: green;
+}

@@ -1,0 +1,364 @@
+<h1>Sign-up</h1>
+
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <fieldset>
+    <legend>Account basics</legend>
+
+    <!-- ******************************************* -->
+    <p>
+      <label id="username-label">
+        <span class="label-text"
+          >Username <span class="label-text-necessity">(required)</span></span
+        >
+        <input
+          type="text"
+          formControlName="username"
+          aria-describedby="username-description"
+          [attr.aria-invalid]="
+            form.controls.username.invalid &&
+            (form.controls.username.touched || form.controls.username.dirty)
+          "
+          autocomplete="username"
+        />
+      </label>
+    </p>
+    <p class="field-description" id="username-description">
+      User name may only contain letters (a-z), numbers (0-9) and an underscore (_).
+      Example: beautiful_flower_2020
+    </p>
+    <p
+      *ngIf="
+        form.controls.username.invalid &&
+        (form.controls.username.touched || form.controls.username.dirty)
+      "
+      class="field-error"
+      role="alert"
+      aria-describedby="username-label"
+    >
+      <span class="field-error-mark" aria-hidden="true">❗</span>
+      <ng-container *ngIf="form.controls.username.errors?.required">
+        User name must be given.
+      </ng-container>
+      <ng-container *ngIf="form.controls.username.errors?.pattern">
+        User name contains invalid characters.
+      </ng-container>
+      <ng-container *ngIf="form.controls.username.errors?.maxlength">
+        User name must have less then 50 characters.
+      </ng-container>
+    </p>
+
+    <!-- ******************************************* -->
+    <p>
+      <label>
+        <span class="label-text"
+          >Email <span class="label-text-necessity">(required)</span></span
+        >
+        <input
+          type="email"
+          formControlName="email"
+          aria-describedby="email-description"
+          [attr.aria-invalid]="
+            form.controls.email.invalid &&
+            (form.controls.email.touched || form.controls.email.dirty)
+          "
+          autocomplete="email"
+        />
+      </label>
+    </p>
+    <p class="field-description" id="email-description">
+      Example: brigitte.bryan@example.org
+    </p>
+    <p
+      *ngIf="
+        form.controls.email.invalid &&
+        (form.controls.email.touched || form.controls.email.dirty)
+      "
+      class="field-error"
+      role="alert"
+    >
+      <span class="field-error-mark" aria-hidden="true">❗</span>
+      <ng-container *ngIf="form.controls.email.errors?.required">
+        Email must be given.
+      </ng-container>
+      <ng-container *ngIf="form.controls.email.errors?.email">
+        Not a valid email address.
+      </ng-container>
+    </p>
+
+    <!-- ******************************************* -->
+    <p>
+      <label>
+        <span class="label-text"
+          >Password <span class="label-text-necessity">(required)</span></span
+        >
+        <input
+          type="password"
+          formControlName="password"
+          aria-describedby="password-description"
+          [attr.aria-invalid]="
+            form.controls.password.invalid &&
+            (form.controls.password.touched || form.controls.password.dirty)
+          "
+          autocomplete="new-password"
+          (input)="getPasswordStrength()"
+        />
+      </label>
+    </p>
+    <div
+      class="field-description"
+      id="password-description"
+      *ngIf="passwordStrength$ | async as passwordStrength"
+      class="password-strength"
+    >
+      <div>
+        Strength:
+        <strong *ngIf="passwordStrength.score < 3" class="password-strength-weak"
+          >Weak</strong
+        >
+        <span *ngIf="passwordStrength.score === 3" class="password-strength-fair"
+          >Fair</span
+        >
+        <span *ngIf="passwordStrength.score > 3" class="password-strength-strong"
+          >Strong</span
+        >
+      </div>
+      <div *ngIf="passwordStrength.warning">{{ passwordStrength.warning }}</div>
+      <div *ngFor="let suggestion of passwordStrength.suggestions">
+        {{ suggestion }}
+      </div>
+    </div>
+    <p
+      *ngIf="
+        form.controls.password.invalid &&
+        (form.controls.password.touched || form.controls.password.dirty)
+      "
+      class="field-error"
+      role="alert"
+    >
+      <span class="field-error-mark" aria-hidden="true">❗</span>
+      <ng-container *ngIf="form.controls.password.errors?.required">
+        Password must be given.
+      </ng-container>
+      <ng-container *ngIf="form.controls.password.errors?.weak">
+        Password is too weak.
+      </ng-container>
+    </p>
+  </fieldset>
+
+  <fieldset formGroupName="address">
+    <legend>Shipping address</legend>
+
+    <!-- ******************************************* -->
+    <p>
+      <label>
+        <span class="label-text"
+          >Full name <span class="label-text-necessity">(required)</span></span
+        >
+        <input
+          type="text"
+          formControlName="name"
+          [attr.aria-invalid]="
+            form.controls.address.controls.name.invalid &&
+            (form.controls.address.controls.name.touched ||
+              form.controls.address.controls.name.dirty)
+          "
+          autocomplete="name"
+        />
+      </label>
+    </p>
+    <p
+      *ngIf="
+        form.controls.address.controls.name.invalid &&
+        (form.controls.address.controls.name.touched ||
+          form.controls.address.controls.name.dirty)
+      "
+      class="field-error"
+      role="alert"
+    >
+      <span class="field-error-mark" aria-hidden="true">❗</span>
+      <ng-container *ngIf="form.controls.address.controls.name.errors?.required">
+        Name must be given.
+      </ng-container>
+    </p>
+
+    <!-- ******************************************* -->
+    <p>
+      <label>
+        <span class="label-text"
+          >Address line 1 <span class="label-text-necessity">(optional)</span></span
+        >
+        <input
+          type="text"
+          formControlName="addressLine1"
+          aria-describedby="addressLine1-description"
+          autocomplete="address-line1"
+        />
+      </label>
+    </p>
+    <p class="field-description" id="addressLine1-description">
+      For example, a company name
+    </p>
+
+    <!-- ******************************************* -->
+    <p>
+      <label>
+        <span class="label-text"
+          >Street and house number
+          <span class="label-text-necessity">(required)</span></span
+        >
+        <input
+          type="text"
+          formControlName="addressLine2"
+          [attr.aria-invalid]="
+            form.controls.address.controls.addressLine2.invalid &&
+            (form.controls.address.controls.addressLine2.touched ||
+              form.controls.address.controls.addressLine2.dirty)
+          "
+          autocomplete="address-line2"
+        />
+      </label>
+    </p>
+    <p
+      *ngIf="
+        form.controls.address.controls.addressLine2.invalid &&
+        (form.controls.address.controls.addressLine2.touched ||
+          form.controls.address.controls.addressLine2.dirty)
+      "
+      class="field-error"
+      role="alert"
+    >
+      <span class="field-error-mark" aria-hidden="true">❗</span>
+      <ng-container *ngIf="form.controls.address.controls.addressLine2.errors?.required">
+        Street and house number must be given.
+      </ng-container>
+    </p>
+
+    <!-- ******************************************* -->
+    <p>
+      <label>
+        <span class="label-text"
+          >City <span class="label-text-necessity">(required)</span></span
+        >
+        <input
+          type="text"
+          formControlName="city"
+          [attr.aria-invalid]="
+            form.controls.address.controls.city.invalid &&
+            (form.controls.address.controls.city.touched ||
+              form.controls.address.controls.city.dirty)
+          "
+          autocomplete="shipping address-level2"
+        />
+      </label>
+    </p>
+    <p
+      *ngIf="
+        form.controls.address.controls.city.invalid &&
+        (form.controls.address.controls.city.touched ||
+          form.controls.address.controls.city.dirty)
+      "
+      class="field-error"
+      role="alert"
+    >
+      <span class="field-error-mark" aria-hidden="true">❗</span>
+      <ng-container *ngIf="form.controls.address.controls.city.errors?.required">
+        City must be given.
+      </ng-container>
+    </p>
+
+    <!-- ******************************************* -->
+    <p>
+      <label>
+        <span class="label-text"
+          >Postcode <span class="label-text-necessity">(required)</span></span
+        >
+        <input
+          type="text"
+          formControlName="postcode"
+          [attr.aria-invalid]="
+            form.controls.address.controls.postcode.invalid &&
+            (form.controls.address.controls.postcode.touched ||
+              form.controls.address.controls.postcode.dirty)
+          "
+          autocomplete="shipping postal-code"
+        />
+      </label>
+    </p>
+    <p
+      *ngIf="
+        form.controls.address.controls.postcode.invalid &&
+        (form.controls.address.controls.postcode.touched ||
+          form.controls.address.controls.postcode.dirty)
+      "
+      class="field-error"
+      role="alert"
+    >
+      <span class="field-error-mark" aria-hidden="true">❗</span>
+      <ng-container *ngIf="form.controls.address.controls.postcode.errors?.required">
+        Postcode must be given.
+      </ng-container>
+    </p>
+
+    <!-- ******************************************* -->
+    <p>
+      <label>
+        <span class="label-text"
+          >State/Province/Region
+          <span class="label-text-necessity">(optional)</span></span
+        >
+        <input
+          type="text"
+          formControlName="region"
+          aria-describedby="region-description"
+          autocomplete="shipping address-level1"
+        />
+      </label>
+    </p>
+
+    <!-- ******************************************* -->
+    <p>
+      <label>
+        <span class="label-text"
+          >Country <span class="label-text-necessity">(required)</span></span
+        >
+        <select
+          formControlName="country"
+          [attr.aria-invalid]="
+            form.controls.address.controls.country.invalid &&
+            (form.controls.address.controls.country.touched ||
+              form.controls.address.controls.country.dirty)
+          "
+          autocomplete="shipping country"
+        >
+          <option>Balnibarbi</option>
+          <option>Blefuscu</option>
+          <option>Brobdingnag</option>
+          <option>Glubbdubdrib</option>
+          <option>Laputa</option>
+          <option>Lilliput</option>
+          <option>Luggnagg</option>
+        </select>
+      </label>
+    </p>
+    <p
+      *ngIf="
+        form.controls.address.controls.country.invalid &&
+        (form.controls.address.controls.country.touched ||
+          form.controls.address.controls.country.dirty)
+      "
+      class="field-error"
+      role="alert"
+    >
+      <span class="field-error-mark" aria-hidden="true">❗</span>
+      <ng-container *ngIf="form.controls.address.controls.country.errors?.required">
+        Country must be given.
+      </ng-container>
+    </p>
+  </fieldset>
+
+  <!-- ******************************************* -->
+
+  <p><button type="submit" [disabled]="!form.valid">Submit</button></p>
+
+  <div role="status">TODO</div>
+</form>
