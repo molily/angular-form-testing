@@ -45,6 +45,9 @@
       <ng-container *ngIf="form.controls.username.errors?.maxlength">
         User name must have less then 50 characters.
       </ng-container>
+      <ng-container *ngIf="form.controls.username.errors?.taken">
+        User name is already taken. Please choose another one.
+      </ng-container>
     </p>
 
     <!-- ******************************************* -->
