@@ -25,6 +25,16 @@ export class SignupFormComponent {
     ),
   );
 
+  public address = this.formBuilder.group({
+    name: [null, required],
+    addressLine1: [null],
+    addressLine2: [null, required],
+    city: [null, required],
+    postcode: [null, required],
+    region: [null],
+    country: [null, required],
+  });
+
   public form = this.formBuilder.group({
     username: [
       null,
@@ -33,18 +43,12 @@ export class SignupFormComponent {
     ],
     email: [null, compose([required, email])],
     password: ['', required, () => this.passwordValidator()],
-    address: this.formBuilder.group({
-      name: [null, required],
-      addressLine1: [null],
-      addressLine2: [null, required],
-      city: [null, required],
-      postcode: [null, required],
-      region: [null],
-      country: [null, required],
-    }),
+    address: this.address,
   });
 
   public passwordStrength?: PasswordStrength;
+
+  public submitProgress: 'idle' | 'success' | 'error' = 'idle';
 
   constructor(private signupService: SignupService, private formBuilder: FormBuilder) {}
 
@@ -72,11 +76,13 @@ export class SignupFormComponent {
   public onSubmit(): void {
     console.log('onSubmit');
     this.signupService.signup(this.form.value).subscribe(
-      () => {
-        console.log('signup success');
+      (x) => {
+        console.log('signup success', x);
+        this.submitProgress = 'success';
       },
       (error) => {
         console.log('signup error', error);
+        this.submitProgress = 'error';
       },
     );
   }

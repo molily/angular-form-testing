@@ -49,3 +49,18 @@ select {
 .password-strength-strong {
   color: green;
 }
+
+.form-submit-success,
+.form-submit-error {
+  padding: 1rem;
+}
+
+.form-submit-success {
+  background-color: palegreen;
+  color: green;
+}
+
+.form-submit-error {
+  background-color: blanchedalmond;
+  color: crimson;
+}
