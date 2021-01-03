@@ -1,0 +1,8 @@
+<p
+  *ngIf="control && control.invalid && (control.touched || control.dirty)"
+  class="field-error"
+  role="alert"
+>
+  <span class="field-error-mark" aria-hidden="true">❗</span>
+  <ng-container *ngTemplateOutlet="template; context: templateContext"></ng-container>
+</p>

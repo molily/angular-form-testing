@@ -6,9 +6,15 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppComponent } from './app.component';
 import { SignupFormComponent } from './components/signup-form/signup-form.component';
 import { AriaInvalidDirective } from './directives/aria-invalid.directive';
+import { FieldErrorsComponent } from './components/field-errors/field-errors.component';
 
 @NgModule({
-  declarations: [AppComponent, SignupFormComponent, AriaInvalidDirective],
+  declarations: [
+    AppComponent,
+    SignupFormComponent,
+    AriaInvalidDirective,
+    FieldErrorsComponent,
+  ],
   imports: [BrowserModule, ReactiveFormsModule, HttpClientModule],
   providers: [],
   bootstrap: [AppComponent],

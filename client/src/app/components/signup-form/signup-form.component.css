@@ -30,14 +30,6 @@ select {
   font-weight: normal;
 }
 
-.field-error {
-  color: crimson;
-}
-
-.field-error-mark {
-  font-size: 85%;
-}
-
 .password-strength-weak {
   color: crimson;
 }

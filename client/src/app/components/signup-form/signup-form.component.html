@@ -7,9 +7,10 @@
     <!-- ******************************************* -->
     <p>
       <label id="username-label">
-        <span class="label-text"
-          >Username <span class="label-text-necessity">(required)</span></span
-        >
+        <span class="label-text">
+          Username
+          <span class="label-text-necessity">(required)</span>
+        </span>
         <input
           type="text"
           formControlName="username"
@@ -23,36 +24,28 @@
       User name may only contain letters (a-z), numbers (0-9) and an underscore (_).
       Example: beautiful_flower_2020
     </p>
-    <p
-      *ngIf="
-        form.controls.username.invalid &&
-        (form.controls.username.touched || form.controls.username.dirty)
-      "
-      class="field-error"
-      role="alert"
-      aria-describedby="username-label"
-    >
-      <span class="field-error-mark" aria-hidden="true">❗</span>
-      <ng-container *ngIf="form.controls.username.errors?.required">
-        User name must be given.
-      </ng-container>
-      <ng-container *ngIf="form.controls.username.errors?.pattern">
-        User name contains invalid characters.
-      </ng-container>
-      <ng-container *ngIf="form.controls.username.errors?.maxlength">
-        User name must have less then 50 characters.
-      </ng-container>
-      <ng-container *ngIf="form.controls.username.errors?.taken">
-        User name is already taken. Please choose another one.
-      </ng-container>
-    </p>
+    <app-field-errors controlName="username">
+      <ng-template let-errors>
+        <ng-container *ngIf="errors.required"> User name must be given. </ng-container>
+        <ng-container *ngIf="errors.pattern">
+          User name contains invalid characters.
+        </ng-container>
+        <ng-container *ngIf="errors.maxlength">
+          User name must have less then 50 characters.
+        </ng-container>
+        <ng-container *ngIf="errors.taken">
+          User name is already taken. Please choose another one.
+        </ng-container>
+      </ng-template>
+    </app-field-errors>
 
     <!-- ******************************************* -->
     <p>
       <label>
-        <span class="label-text"
-          >Email <span class="label-text-necessity">(required)</span></span
-        >
+        <span class="label-text">
+          Email
+          <span class="label-text-necessity">(required)</span>
+        </span>
         <input
           type="email"
           formControlName="email"
@@ -65,29 +58,20 @@
     <p class="field-description" id="email-description">
       Example: brigitte.bryan@example.org
     </p>
-    <p
-      *ngIf="
-        form.controls.email.invalid &&
-        (form.controls.email.touched || form.controls.email.dirty)
-      "
-      class="field-error"
-      role="alert"
-    >
-      <span class="field-error-mark" aria-hidden="true">❗</span>
-      <ng-container *ngIf="form.controls.email.errors?.required">
-        Email must be given.
-      </ng-container>
-      <ng-container *ngIf="form.controls.email.errors?.email">
-        Not a valid email address.
-      </ng-container>
-    </p>
+    <app-field-errors controlName="email">
+      <ng-template let-errors>
+        <ng-container *ngIf="errors.required"> Email must be given. </ng-container>
+        <ng-container *ngIf="errors.email"> Not a valid email address. </ng-container>
+      </ng-template>
+    </app-field-errors>
 
     <!-- ******************************************* -->
     <p>
       <label>
-        <span class="label-text"
-          >Password <span class="label-text-necessity">(required)</span></span
-        >
+        <span class="label-text">
+          Password
+          <span class="label-text-necessity">(required)</span>
+        </span>
         <input
           type="password"
           formControlName="password"
@@ -106,37 +90,27 @@
     >
       <div>
         Strength:
-        <strong *ngIf="passwordStrength.score < 3" class="password-strength-weak"
-          >Weak</strong
-        >
-        <span *ngIf="passwordStrength.score === 3" class="password-strength-fair"
-          >Fair</span
-        >
-        <span *ngIf="passwordStrength.score > 3" class="password-strength-strong"
-          >Strong</span
-        >
+        <strong *ngIf="passwordStrength.score < 3" class="password-strength-weak">
+          Weak
+        </strong>
+        <span *ngIf="passwordStrength.score === 3" class="password-strength-fair">
+          Fair
+        </span>
+        <span *ngIf="passwordStrength.score > 3" class="password-strength-strong">
+          Strong
+        </span>
       </div>
       <div *ngIf="passwordStrength.warning">{{ passwordStrength.warning }}</div>
       <div *ngFor="let suggestion of passwordStrength.suggestions">
         {{ suggestion }}
       </div>
     </div>
-    <p
-      *ngIf="
-        form.controls.password.invalid &&
-        (form.controls.password.touched || form.controls.password.dirty)
-      "
-      class="field-error"
-      role="alert"
-    >
-      <span class="field-error-mark" aria-hidden="true">❗</span>
-      <ng-container *ngIf="form.controls.password.errors?.required">
-        Password must be given.
-      </ng-container>
-      <ng-container *ngIf="form.controls.password.errors?.weak">
-        Password is too weak.
-      </ng-container>
-    </p>
+    <app-field-errors controlName="password">
+      <ng-template let-errors>
+        <ng-container *ngIf="errors.required"> Password must be given. </ng-container>
+        <ng-container *ngIf="errors.weak"> Password is too weak. </ng-container>
+      </ng-template>
+    </app-field-errors>
   </fieldset>
 
   <fieldset formGroupName="address">
@@ -145,32 +119,26 @@
     <!-- ******************************************* -->
     <p>
       <label>
-        <span class="label-text"
-          >Full name <span class="label-text-necessity">(required)</span></span
-        >
+        <span class="label-text">
+          Full name
+          <span class="label-text-necessity">(required)</span>
+        </span>
         <input type="text" formControlName="name" appAriaInvalid autocomplete="name" />
       </label>
     </p>
-    <p
-      *ngIf="
-        address.controls.name.invalid &&
-        (address.controls.name.touched || address.controls.name.dirty)
-      "
-      class="field-error"
-      role="alert"
-    >
-      <span class="field-error-mark" aria-hidden="true">❗</span>
-      <ng-container *ngIf="address.controls.name.errors?.required">
-        Name must be given.
-      </ng-container>
-    </p>
+    <app-field-errors controlName="name">
+      <ng-template let-errors>
+        <ng-container *ngIf="errors.required"> Name must be given. </ng-container>
+      </ng-template>
+    </app-field-errors>
 
     <!-- ******************************************* -->
     <p>
       <label>
-        <span class="label-text"
-          >Address line 1 <span class="label-text-necessity">(optional)</span></span
-        >
+        <span class="label-text">
+          Address line 1
+          <span class="label-text-necessity">(optional)</span>
+        </span>
         <input
           type="text"
           formControlName="addressLine1"
@@ -186,10 +154,10 @@
     <!-- ******************************************* -->
     <p>
       <label>
-        <span class="label-text"
-          >Street and house number
-          <span class="label-text-necessity">(required)</span></span
-        >
+        <span class="label-text">
+          Street and house number
+          <span class="label-text-necessity">(required)</span>
+        </span>
         <input
           type="text"
           formControlName="addressLine2"
@@ -198,26 +166,21 @@
         />
       </label>
     </p>
-    <p
-      *ngIf="
-        address.controls.addressLine2.invalid &&
-        (address.controls.addressLine2.touched || address.controls.addressLine2.dirty)
-      "
-      class="field-error"
-      role="alert"
-    >
-      <span class="field-error-mark" aria-hidden="true">❗</span>
-      <ng-container *ngIf="address.controls.addressLine2.errors?.required">
-        Street and house number must be given.
-      </ng-container>
-    </p>
+    <app-field-errors controlName="addressLine2">
+      <ng-template let-errors>
+        <ng-container *ngIf="errors.required">
+          Street and house number must be given.
+        </ng-container>
+      </ng-template>
+    </app-field-errors>
 
     <!-- ******************************************* -->
     <p>
       <label>
-        <span class="label-text"
-          >City <span class="label-text-necessity">(required)</span></span
-        >
+        <span class="label-text">
+          City
+          <span class="label-text-necessity">(required)</span>
+        </span>
         <input
           type="text"
           formControlName="city"
@@ -226,19 +189,11 @@
         />
       </label>
     </p>
-    <p
-      *ngIf="
-        address.controls.city.invalid &&
-        (address.controls.city.touched || address.controls.city.dirty)
-      "
-      class="field-error"
-      role="alert"
-    >
-      <span class="field-error-mark" aria-hidden="true">❗</span>
-      <ng-container *ngIf="address.controls.city.errors?.required">
-        City must be given.
-      </ng-container>
-    </p>
+    <app-field-errors controlName="city">
+      <ng-template let-errors>
+        <ng-container *ngIf="errors.required"> City must be given. </ng-container>
+      </ng-template>
+    </app-field-errors>
 
     <!-- ******************************************* -->
     <p>
@@ -254,19 +209,11 @@
         />
       </label>
     </p>
-    <p
-      *ngIf="
-        address.controls.postcode.invalid &&
-        (address.controls.postcode.touched || address.controls.postcode.dirty)
-      "
-      class="field-error"
-      role="alert"
-    >
-      <span class="field-error-mark" aria-hidden="true">❗</span>
-      <ng-container *ngIf="address.controls.postcode.errors?.required">
-        Postcode must be given.
-      </ng-container>
-    </p>
+    <app-field-errors controlName="postcode">
+      <ng-template let-errors>
+        <ng-container *ngIf="errors.required"> Postcode must be given. </ng-container>
+      </ng-template>
+    </app-field-errors>
 
     <!-- ******************************************* -->
     <p>
@@ -301,19 +248,11 @@
         </select>
       </label>
     </p>
-    <p
-      *ngIf="
-        address.controls.country.invalid &&
-        (address.controls.country.touched || address.controls.country.dirty)
-      "
-      class="field-error"
-      role="alert"
-    >
-      <span class="field-error-mark" aria-hidden="true">❗</span>
-      <ng-container *ngIf="address.controls.country.errors?.required">
-        Country must be given.
-      </ng-container>
-    </p>
+    <app-field-errors controlName="country">
+      <ng-template let-errors>
+        <ng-container *ngIf="errors.required"> Country must be given. </ng-container>
+      </ng-template>
+    </app-field-errors>
   </fieldset>
 
   <!-- ******************************************* -->
