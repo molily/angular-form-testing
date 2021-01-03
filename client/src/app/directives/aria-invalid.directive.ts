@@ -1,5 +1,7 @@
 import { Directive, HostBinding, Input, OnInit, Optional } from '@angular/core';
-import { AbstractControl, ControlContainer, FormControl } from '@angular/forms';
+import { AbstractControl, ControlContainer } from '@angular/forms';
+
+import { findFormControl } from '../util/findFormControl';
 
 /**
  * Directive that sets the aria-invalid attribute if the form control
@@ -23,7 +25,7 @@ export class AriaInvalidDirective implements OnInit {
   }
 
   @Input()
-  public formControl?: FormControl;
+  public formControl?: AbstractControl;
 
   @Input()
   public formControlName?: string;
@@ -33,25 +35,10 @@ export class AriaInvalidDirective implements OnInit {
   constructor(@Optional() private controlContainer?: ControlContainer) {}
 
   public ngOnInit(): void {
-    const { formControl, formControlName } = this;
-    if (formControl) {
-      this.control = formControl;
-    } else {
-      if (!formControlName) {
-        throw new Error(
-          'AriaInvalidDirective: formControl or formControlName must be given',
-        );
-      }
-      if (!(this.controlContainer && this.controlContainer.control)) {
-        throw new Error(
-          'AriaInvalidDirective: formControlName was given but parent control not found',
-        );
-      }
-      const control = this.controlContainer.control.get(formControlName);
-      if (!control) {
-        throw new Error(`AriaInvalidDirective: control '${formControlName}' not found`);
-      }
-      this.control = control;
-    }
+    this.control = findFormControl(
+      this.formControl,
+      this.formControlName,
+      this.controlContainer,
+    );
   }
 }

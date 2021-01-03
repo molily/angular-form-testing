@@ -9,6 +9,8 @@ import {
 } from '@angular/core';
 import { AbstractControl, ControlContainer, ValidationErrors } from '@angular/forms';
 import { Subscription } from 'rxjs';
+import { startWith } from 'rxjs/operators';
+import { findFormControl } from 'src/app/util/findFormControl';
 
 interface TemplateContext {
   $implicit: ValidationErrors;
@@ -26,6 +28,8 @@ export class FieldErrorsComponent implements OnInit, OnDestroy {
   @Input()
   public controlName?: string;
 
+  public internalControl?: AbstractControl;
+
   @ContentChild(TemplateRef)
   public template: TemplateRef<TemplateContext> | null = null;
 
@@ -35,38 +39,30 @@ export class FieldErrorsComponent implements OnInit, OnDestroy {
 
   private subscription?: Subscription;
 
-  constructor(@Optional() private controlContainer?: ControlContainer) {}
+  constructor(
+    @Optional()
+    private controlContainer?: ControlContainer,
+  ) {}
 
   public ngOnInit(): void {
-    const { control, controlName } = this;
-    if (control) {
-      this.control = control;
-    } else {
-      if (!controlName) {
-        throw new Error('FieldErrorsComponent: formControl or controlName must be given');
-      }
-      if (!(this.controlContainer && this.controlContainer.control)) {
-        throw new Error(
-          'FieldErrorsComponent: controlName was given but parent control not found',
-        );
-      }
-      const controlFromName = this.controlContainer.control.get(controlName);
-      if (!controlFromName) {
-        throw new Error(`FieldErrorsComponent: control '${controlName}' not found`);
-      }
-      this.control = controlFromName;
-    }
-    this.updateTemplateContext();
+    const control = findFormControl(
+      this.control,
+      this.controlName,
+      this.controlContainer,
+    );
+    this.internalControl = control;
 
-    this.subscription = this.control.valueChanges.subscribe(() => {
-      this.updateTemplateContext();
-    });
+    this.subscription = control.valueChanges
+      .pipe(startWith(control.value))
+      .subscribe(() => {
+        this.updateTemplateContext();
+      });
   }
 
   private updateTemplateContext(): void {
-    if (this.control && this.control.errors) {
+    if (this.internalControl && this.internalControl.errors) {
       this.templateContext = {
-        $implicit: this.control.errors,
+        $implicit: this.internalControl.errors,
       };
     }
   }
