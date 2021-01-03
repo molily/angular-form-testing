@@ -25,16 +25,6 @@ export class SignupFormComponent {
     ),
   );
 
-  public address = this.formBuilder.group({
-    name: [null, required],
-    addressLine1: [null],
-    addressLine2: [null, required],
-    city: [null, required],
-    postcode: [null, required],
-    region: [null],
-    country: [null, required],
-  });
-
   public form = this.formBuilder.group({
     username: [
       null,
@@ -43,7 +33,15 @@ export class SignupFormComponent {
     ],
     email: [null, compose([required, email])],
     password: ['', required, () => this.passwordValidator()],
-    address: this.address,
+    address: this.formBuilder.group({
+      name: [null, required],
+      addressLine1: [null],
+      addressLine2: [null, required],
+      city: [null, required],
+      postcode: [null, required],
+      region: [null],
+      country: [null, required],
+    }),
   });
 
   public passwordStrength?: PasswordStrength;
