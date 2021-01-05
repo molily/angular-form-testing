@@ -4,7 +4,7 @@ import { EMPTY, merge, Observable, of, Subject, timer } from 'rxjs';
 import { catchError, debounceTime, first, map, switchMap, tap } from 'rxjs/operators';
 import { PasswordStrength, SignupService } from 'src/app/services/signup.service';
 
-const { compose, required, maxLength, pattern, email } = Validators;
+const { required, maxLength, pattern, email } = Validators;
 
 @Component({
   selector: 'app-signup-form',
@@ -28,10 +28,10 @@ export class SignupFormComponent {
   public form = this.formBuilder.group({
     username: [
       null,
-      compose([required, maxLength(50), pattern('[a-zA-Z0-9_]+')]),
+      [required, maxLength(50), pattern('[a-zA-Z0-9_]+')],
       (control: FormControl) => this.usernameValidator(control),
     ],
-    email: [null, compose([required, email])],
+    email: [null, [required, email]],
     password: ['', required, () => this.passwordValidator()],
     address: this.formBuilder.group({
       name: [null, required],
