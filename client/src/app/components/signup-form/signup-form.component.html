@@ -1,6 +1,6 @@
 <h1>Sign-up</h1>
 
-<form [formGroup]="form" (ngSubmit)="onSubmit()">
+<form [formGroup]="form" (ngSubmit)="onSubmit()" data-testid="form">
   <fieldset>
     <legend>Account basics</legend>
 
@@ -17,6 +17,7 @@
           aria-describedby="username-description"
           appAriaInvalid
           autocomplete="username"
+          data-testid="username"
         />
       </label>
     </p>
@@ -52,6 +53,7 @@
           aria-describedby="email-description"
           appAriaInvalid
           autocomplete="email"
+          data-testid="email"
         />
       </label>
     </p>
@@ -79,6 +81,7 @@
           appAriaInvalid
           autocomplete="new-password"
           (input)="getPasswordStrength()"
+          data-testid="password"
         />
       </label>
     </p>
@@ -123,7 +126,13 @@
           Full name
           <span class="label-text-necessity">(required)</span>
         </span>
-        <input type="text" formControlName="name" appAriaInvalid autocomplete="name" />
+        <input
+          type="text"
+          formControlName="name"
+          appAriaInvalid
+          autocomplete="name"
+          data-testid="name"
+        />
       </label>
     </p>
     <app-field-errors controlName="name">
@@ -144,6 +153,7 @@
           formControlName="addressLine1"
           aria-describedby="addressLine1-description"
           autocomplete="address-line1"
+          data-testid="addressLine1"
         />
       </label>
     </p>
@@ -163,6 +173,7 @@
           formControlName="addressLine2"
           appAriaInvalid
           autocomplete="address-line2"
+          data-testid="addressLine2"
         />
       </label>
     </p>
@@ -186,6 +197,7 @@
           formControlName="city"
           appAriaInvalid
           autocomplete="shipping address-level2"
+          data-testid="city"
         />
       </label>
     </p>
@@ -206,6 +218,7 @@
           formControlName="postcode"
           appAriaInvalid
           autocomplete="shipping postal-code"
+          data-testid="postcode"
         />
       </label>
     </p>
@@ -227,6 +240,7 @@
           formControlName="region"
           aria-describedby="region-description"
           autocomplete="shipping address-level1"
+          data-testid="region"
         />
       </label>
     </p>
@@ -237,7 +251,12 @@
         <span class="label-text"
           >Country <span class="label-text-necessity">(required)</span></span
         >
-        <select formControlName="country" appAriaInvalid autocomplete="shipping country">
+        <select
+          formControlName="country"
+          appAriaInvalid
+          autocomplete="shipping country"
+          data-testid="country"
+        >
           <option>Balnibarbi</option>
           <option>Blefuscu</option>
           <option>Brobdingnag</option>
@@ -257,12 +276,26 @@
 
   <!-- ******************************************* -->
 
-  <p><button type="submit" [disabled]="!form.valid">Submit</button></p>
+  <div>valid? {{ form.valid ? 'true' : 'false' }}</div>
+  <div>errors {{ form.errors | json }}</div>
+  <p>
+    <button type="submit" [disabled]="!form.valid" data-testid="submit">Submit</button>
+  </p>
 
-  <p *ngIf="submitProgress === 'success'" role="status" class="form-submit-success">
+  <p
+    *ngIf="submitProgress === 'success'"
+    role="status"
+    class="form-submit-success"
+    data-testid="status"
+  >
     <strong>Sign-up successful</strong>
   </p>
-  <p *ngIf="submitProgress === 'error'" role="status" class="form-submit-error">
+  <p
+    *ngIf="submitProgress === 'error'"
+    role="status"
+    class="form-submit-error"
+    data-testid="status"
+  >
     <strong>Sign-up error</strong>
   </p>
 </form>

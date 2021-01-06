@@ -1,7 +1,13 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormControl, ValidationErrors, Validators } from '@angular/forms';
-import { EMPTY, merge, Observable, of, Subject, timer } from 'rxjs';
-import { catchError, debounceTime, first, map, switchMap, tap } from 'rxjs/operators';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ValidationErrors,
+  Validators,
+} from '@angular/forms';
+import { EMPTY, merge, Observable, Subject, timer } from 'rxjs';
+import { catchError, debounceTime, first, map, switchMap } from 'rxjs/operators';
 import { PasswordStrength, SignupService } from 'src/app/services/signup.service';
 
 const { required, maxLength, pattern, email } = Validators;
@@ -72,14 +78,11 @@ export class SignupFormComponent {
   }
 
   public onSubmit(): void {
-    console.log('onSubmit');
     this.signupService.signup(this.form.value).subscribe(
-      (x) => {
-        console.log('signup success', x);
+      () => {
         this.submitProgress = 'success';
       },
-      (error) => {
-        console.log('signup error', error);
+      () => {
         this.submitProgress = 'error';
       },
     );

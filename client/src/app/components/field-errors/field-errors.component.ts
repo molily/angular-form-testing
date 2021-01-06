@@ -52,9 +52,9 @@ export class FieldErrorsComponent implements OnInit, OnDestroy {
     );
     this.internalControl = control;
 
-    this.subscription = control.valueChanges
-      .pipe(startWith(control.value))
-      .subscribe(() => {
+    this.subscription = control.statusChanges
+      .pipe(startWith('PENDING'))
+      .subscribe((status) => {
         this.updateTemplateContext();
       });
   }

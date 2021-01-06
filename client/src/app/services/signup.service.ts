@@ -15,6 +15,15 @@ export interface SignupData {
   username: string;
   email: string;
   password: string;
+  address: {
+    name: string;
+    addressLine1?: string;
+    addressLine2: string;
+    city: string;
+    postcode: string;
+    region?: string;
+    country: string;
+  };
 }
 
 @Injectable({
@@ -23,20 +32,17 @@ export interface SignupData {
 export class SignupService {
   constructor(public http: HttpClient) {}
 
-  public getPasswordStrength(password: string): Observable<PasswordStrength> {
-    console.log('SignupService getPasswordStrength', password);
-    return this.http.post<PasswordStrength>('/api/password-strength', { password });
-  }
-
   public isUsernameTaken(username: string): Observable<boolean> {
-    console.log('SignupService isUsernameTaken', username);
     return this.http
       .post<{ usernameTaken: boolean }>('/api/username-taken', { username })
       .pipe(map((result) => result.usernameTaken));
   }
 
+  public getPasswordStrength(password: string): Observable<PasswordStrength> {
+    return this.http.post<PasswordStrength>('/api/password-strength', { password });
+  }
+
   public signup(data: SignupData): Observable<{ success: true }> {
-    console.log('SignupService signup', data);
     return this.http.post<{ success: true }>('/api/signup', data);
   }
 }
