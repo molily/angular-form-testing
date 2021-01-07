@@ -1,39 +1,29 @@
 import { NO_ERRORS_SCHEMA } from '@angular/compiler';
 import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
-import { By } from '@angular/platform-browser';
 import { of, throwError } from 'rxjs';
+import { PasswordStrength, SignupService } from 'src/app/services/signup.service';
 import {
-  PasswordStrength,
-  SignupData,
-  SignupService,
-} from 'src/app/services/signup.service';
-import {
-  click,
   expectText,
   findEl,
   setFieldValue,
-} from 'src/app/spec-helpers/element.spec-helpers';
-import { FieldErrorsComponent } from '../field-errors/field-errors.component';
-
-import { SignupFormComponent } from './signup-form.component';
-
-const username = 'quickBrownFox';
-const password = 'dog lazy the over jumps fix brown quick the';
-const email = 'quick.brown.fox@example.org';
-const name = 'Mr. Fox';
-const addressLine1 = '';
-const addressLine2 = 'Under the Tree 1';
-const city = 'Farmtown';
-const postcode = '123456';
-const region = 'Upper South';
-const country = 'Luggnagg';
-const expectedSignupData: SignupData = {
-  username,
+} from 'src/app/spec-helpers/element.spec-helper';
+import {
+  addressLine1,
+  addressLine2,
+  city,
+  country,
   email,
+  name,
   password,
-  address: { name, addressLine1, addressLine2, city, postcode, region, country },
-};
+  postcode,
+  region,
+  signupData,
+  username,
+} from 'src/app/spec-helpers/signup-data.spec-helper';
+
+import { FieldErrorsComponent } from '../field-errors/field-errors.component';
+import { SignupFormComponent } from './signup-form.component';
 
 const requiredFields = [
   'username',
@@ -116,7 +106,7 @@ describe('SignupFormComponent', () => {
 
       expect(signupService.isUsernameTaken).toHaveBeenCalledWith(username);
       expect(signupService.getPasswordStrength).toHaveBeenCalledWith(password);
-      expect(signupService.signup).toHaveBeenCalledWith(expectedSignupData);
+      expect(signupService.signup).toHaveBeenCalledWith(signupData);
     }));
   });
 
@@ -210,7 +200,7 @@ describe('SignupFormComponent', () => {
 
       expect(signupService.isUsernameTaken).toHaveBeenCalledWith(username);
       expect(signupService.getPasswordStrength).toHaveBeenCalledWith(password);
-      expect(signupService.signup).toHaveBeenCalledWith(expectedSignupData);
+      expect(signupService.signup).toHaveBeenCalledWith(signupData);
     }));
   });
 });

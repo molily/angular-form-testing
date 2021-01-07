@@ -5,7 +5,7 @@ import {
   enterText,
   expectContent,
   findEl,
-} from 'src/app/spec-helpers/element.spec-helpers';
+} from 'src/app/spec-helpers/element.spec-helper';
 
 import { FieldErrorsComponent } from './field-errors.component';
 

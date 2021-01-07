@@ -1,7 +1,8 @@
-import { NO_ERRORS_SCHEMA } from '@angular/compiler';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 
 import { AppComponent } from './app.component';
+import { findComponent } from './spec-helpers/element.spec-helper';
 
 describe('AppComponent', () => {
   beforeEach(async () => {
@@ -11,9 +12,8 @@ describe('AppComponent', () => {
     }).compileComponents();
   });
 
-  it('should create the app', () => {
+  it('renders the sign-up form', () => {
     const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app).toBeTruthy();
+    expect(findComponent(fixture, 'app-signup-form')).toBeTruthy();
   });
 });
