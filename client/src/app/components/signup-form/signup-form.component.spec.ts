@@ -1,6 +1,7 @@
 import { NO_ERRORS_SCHEMA } from '@angular/compiler';
 import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
+import { By } from '@angular/platform-browser';
 import { of, throwError } from 'rxjs';
 import {
   PasswordStrength,
@@ -34,6 +35,16 @@ const expectedSignupData: SignupData = {
   address: { name, addressLine1, addressLine2, city, postcode, region, country },
 };
 
+const requiredFields = [
+  'username',
+  'email',
+  'name',
+  'addressLine2',
+  'city',
+  'postcode',
+  'country',
+];
+
 const weakPassword: PasswordStrength = {
   score: 2,
   warning: 'too short',
@@ -46,23 +57,7 @@ const strongPassword: PasswordStrength = {
   suggestions: [],
 };
 
-// const setFieldValueAndMakeDirty = (testId: string, value: string) => {
-//   setFieldValue(fixture, testId, value);
-//   // (findEl(fixture, testId).nativeElement as HTMLElement).dispatchEvent(
-//   //   new FocusEvent('blur'),
-//   // );
-// };
-
-type Func = (...args: any[]) => any;
-type ReturnValues<T> = { [P in keyof T]?: T[P] extends Func ? ReturnType<T[P]> : any };
-
-const successSignupService: ReturnValues<SignupService> = {
-  isUsernameTaken: of(false),
-  getPasswordStrength: of(strongPassword),
-  signup: of({ success: true }),
-};
-
-fdescribe('SignupFormComponent', () => {
+describe('SignupFormComponent', () => {
   let component: SignupFormComponent;
   let fixture: ComponentFixture<SignupFormComponent>;
   let signupService: jasmine.SpyObj<SignupService>;
@@ -99,10 +94,11 @@ fdescribe('SignupFormComponent', () => {
 
   describe('success case', () => {
     beforeEach(async () => {
-      signupService = jasmine.createSpyObj<SignupService>(
-        'SignupService',
-        successSignupService,
-      );
+      signupService = jasmine.createSpyObj<SignupService>('SignupService', {
+        isUsernameTaken: of(false),
+        getPasswordStrength: of(strongPassword),
+        signup: of({ success: true }),
+      });
       await setup();
     });
 
@@ -127,9 +123,10 @@ fdescribe('SignupFormComponent', () => {
   describe('error case', () => {
     it('fails if the username is taken', fakeAsync(async () => {
       signupService = jasmine.createSpyObj<SignupService>('SignupService', {
-        ...successSignupService,
         // Let the API return that the username is taken
         isUsernameTaken: of(true),
+        getPasswordStrength: of(strongPassword),
+        signup: of({ success: true }),
       });
       await setup();
 
@@ -147,9 +144,10 @@ fdescribe('SignupFormComponent', () => {
 
     it('fails if the password is too weak', fakeAsync(async () => {
       signupService = jasmine.createSpyObj<SignupService>('SignupService', {
-        ...successSignupService,
+        isUsernameTaken: of(false),
         // Let the API return that the password is weak
         getPasswordStrength: of(weakPassword),
+        signup: of({ success: true }),
       });
       await setup();
 
@@ -165,9 +163,35 @@ fdescribe('SignupFormComponent', () => {
       expect(signupService.signup).not.toHaveBeenCalled();
     }));
 
+    it('marks fields as required', async () => {
+      signupService = jasmine.createSpyObj<SignupService>('SignupService', {
+        isUsernameTaken: of(false),
+        getPasswordStrength: of(strongPassword),
+        signup: of({ success: true }),
+      });
+      await setup();
+
+      // Mark required form fields as touched.
+      requiredFields.forEach((testId) => {
+        const debugElement = findEl(fixture, testId);
+        // Dispatch a synthetic blur event.
+        (debugElement.nativeElement as HTMLElement).dispatchEvent(new FocusEvent('blur'));
+      });
+
+      fixture.detectChanges();
+
+      requiredFields.forEach((testId) => {
+        expect(findEl(fixture, testId).classes['ng-invalid']).toBe(
+          true,
+          `${testId} must be required`,
+        );
+      });
+    });
+
     it('handles signup failure', fakeAsync(async () => {
       signupService = jasmine.createSpyObj<SignupService>('SignupService', {
-        ...successSignupService,
+        isUsernameTaken: of(false),
+        getPasswordStrength: of(strongPassword),
         // Let the API report a failure
         signup: throwError(new Error('Validation failed')),
       });
