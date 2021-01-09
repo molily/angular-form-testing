@@ -3,6 +3,11 @@ const rateLimit = require('express-rate-limit');
 const zxcvbn = require('zxcvbn');
 
 /**
+ * Fake service for the form example. This service does nothing useful
+ * and just simulates input validation and signup. Do not use it in production.
+ */
+
+/**
  * Regular expression for validating an email address.
  * Taken from Angular:
  * https://github.com/angular/angular/blob/43b4940c9d595c542a00795976bc3168dd0ca5af/packages/forms/src/validators.ts#L68-L99
@@ -25,7 +30,7 @@ const apiLimiter = rateLimit({
 });
 app.use(apiLimiter);
 
-app.post('/password-strength', function (req, res) {
+app.post('/password-strength', (req, res) => {
   const { password } = req.body;
   if (!(typeof password === 'string' && password !== '' && password.length < 100)) {
     res.sendStatus(400);
@@ -39,7 +44,7 @@ app.post('/password-strength', function (req, res) {
   });
 });
 
-app.post('/username-taken', function (req, res) {
+app.post('/username-taken', (req, res) => {
   const { username } = req.body;
   if (!(typeof username === 'string' && username !== '' && username.length < 100)) {
     res.sendStatus(400);
@@ -73,7 +78,7 @@ const validateSignup = (body) => {
   return errors;
 };
 
-app.post('/signup', function (req, res) {
+app.post('/signup', (req, res) => {
   const errors = validateSignup(req.body);
   if (errors.length > 0) {
     res.status(400).send({ errors });
