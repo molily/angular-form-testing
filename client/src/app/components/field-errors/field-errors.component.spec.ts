@@ -2,9 +2,9 @@ import { Component, Type } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import {
-  enterText,
   expectContent,
   findEl,
+  setFieldElementValue,
 } from 'src/app/spec-helpers/element.spec-helper';
 
 import { FieldErrorsComponent } from './field-errors.component';
@@ -47,7 +47,7 @@ describe('FieldErrorComponent', () => {
 
     describe('valid control', () => {
       it('renders nothing', () => {
-        enterText(input, 'something');
+        setFieldElementValue(input, 'something');
         fixture.detectChanges();
         expectContent(fixture, '');
       });
@@ -104,7 +104,7 @@ describe('FieldErrorComponent', () => {
 
     describe('valid control', () => {
       it('renders nothing', () => {
-        enterText(input, 'something');
+        setFieldElementValue(input, 'something');
         fixture.detectChanges();
         expectContent(fixture, '');
       });
@@ -182,7 +182,7 @@ describe('FieldErrorComponent', () => {
       // Mark control as dirty
       input.dispatchEvent(new Event('input'));
       fixture.detectChanges();
-      expectContent(fixture, '❗');
+      expectContent(fixture, '❗ ');
       expect(findEl(fixture, 'field-error').attributes.role).toBe('alert');
     });
   });

@@ -76,10 +76,6 @@ describe('SignupFormComponent', () => {
     setFieldValue(fixture, 'postcode', postcode);
     setFieldValue(fixture, 'region', region);
     setFieldValue(fixture, 'country', country);
-    // Country is a select element, so we need to simulate a change event
-    (findEl(fixture, 'country').nativeElement as HTMLElement).dispatchEvent(
-      new Event('change'),
-    );
   };
 
   describe('success case', () => {
