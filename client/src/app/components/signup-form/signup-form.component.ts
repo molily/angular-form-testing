@@ -1,13 +1,7 @@
 import { Component } from '@angular/core';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  ValidationErrors,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, FormControl, ValidationErrors, Validators } from '@angular/forms';
 import { EMPTY, merge, Observable, Subject, timer } from 'rxjs';
-import { catchError, debounceTime, first, map, switchMap } from 'rxjs/operators';
+import { catchError, debounceTime, first, map, mapTo, switchMap } from 'rxjs/operators';
 import { PasswordStrength, SignupService } from 'src/app/services/signup.service';
 
 const { required, maxLength, pattern, email } = Validators;
@@ -18,17 +12,16 @@ const { required, maxLength, pattern, email } = Validators;
   styleUrls: ['./signup-form.component.css'],
 })
 export class SignupFormComponent {
-  public syncPasswordStrengthSubject = new Subject<null>();
-  public asyncPasswordStrengthSubject = new Subject<string>();
-
-  public passwordStrength$ = merge(
-    this.syncPasswordStrengthSubject,
-    this.asyncPasswordStrengthSubject.pipe(
-      debounceTime(1000),
-      switchMap((password) =>
-        this.signupService.getPasswordStrength(password).pipe(catchError(() => EMPTY)),
-      ),
+  public passwordSubject = new Subject<string>();
+  public passwordStrengthFromServer$ = this.passwordSubject.pipe(
+    debounceTime(1000),
+    switchMap((password) =>
+      this.signupService.getPasswordStrength(password).pipe(catchError(() => EMPTY)),
     ),
+  );
+  public passwordStrength$ = merge(
+    this.passwordSubject.pipe(mapTo(null)),
+    this.passwordStrengthFromServer$,
   );
 
   public form = this.formBuilder.group({
@@ -64,8 +57,7 @@ export class SignupFormComponent {
   }
 
   public getPasswordStrength(): void {
-    this.asyncPasswordStrengthSubject.next(this.form.controls.password.value);
-    this.syncPasswordStrengthSubject.next(null);
+    this.passwordSubject.next(this.form.controls.password.value);
   }
 
   public passwordValidator(): Observable<ValidationErrors> {
