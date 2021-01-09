@@ -15,7 +15,7 @@
           type="text"
           formControlName="username"
           aria-describedby="username-description"
-          appAriaInvalid
+          appErrorMessage="username-errors"
           autocomplete="username"
           data-testid="username"
         />
@@ -25,7 +25,7 @@
       User name may only contain letters (a-z), numbers (0-9) and an underscore (_).
       Example: beautiful_flower_2020
     </p>
-    <app-field-errors controlName="username">
+    <app-field-errors controlName="username" id="username-errors">
       <ng-template let-errors>
         <ng-container *ngIf="errors.required"> User name must be given. </ng-container>
         <ng-container *ngIf="errors.pattern">
@@ -51,7 +51,7 @@
           type="email"
           formControlName="email"
           aria-describedby="email-description"
-          appAriaInvalid
+          appErrorMessage="email-errors"
           autocomplete="email"
           data-testid="email"
         />
@@ -60,7 +60,7 @@
     <p class="field-description" id="email-description">
       Example: brigitte.bryan@example.org
     </p>
-    <app-field-errors controlName="email">
+    <app-field-errors controlName="email" id="email-errors">
       <ng-template let-errors>
         <ng-container *ngIf="errors.required"> Email must be given. </ng-container>
         <ng-container *ngIf="errors.email"> Not a valid email address. </ng-container>
@@ -78,7 +78,7 @@
           type="password"
           formControlName="password"
           aria-describedby="password-description"
-          appAriaInvalid
+          appErrorMessage="password-errors"
           autocomplete="new-password"
           (input)="getPasswordStrength()"
           data-testid="password"
@@ -86,10 +86,9 @@
       </label>
     </p>
     <div
-      class="field-description"
+      class="field-description password-strength"
       id="password-description"
       *ngIf="passwordStrength$ | async as passwordStrength"
-      class="password-strength"
     >
       <div>
         Strength:
@@ -108,7 +107,7 @@
         {{ suggestion }}
       </div>
     </div>
-    <app-field-errors controlName="password">
+    <app-field-errors controlName="password" id="password-errors">
       <ng-template let-errors>
         <ng-container *ngIf="errors.required"> Password must be given. </ng-container>
         <ng-container *ngIf="errors.weak"> Password is too weak. </ng-container>
@@ -129,13 +128,13 @@
         <input
           type="text"
           formControlName="name"
-          appAriaInvalid
+          appErrorMessage="name-errors"
           autocomplete="name"
           data-testid="name"
         />
       </label>
     </p>
-    <app-field-errors controlName="name">
+    <app-field-errors controlName="name" id="name-errors">
       <ng-template let-errors>
         <ng-container *ngIf="errors.required"> Name must be given. </ng-container>
       </ng-template>
@@ -171,13 +170,13 @@
         <input
           type="text"
           formControlName="addressLine2"
-          appAriaInvalid
+          appErrorMessage="addressLine2-errors"
           autocomplete="address-line2"
           data-testid="addressLine2"
         />
       </label>
     </p>
-    <app-field-errors controlName="addressLine2">
+    <app-field-errors controlName="addressLine2" id="addressLine2-errors">
       <ng-template let-errors>
         <ng-container *ngIf="errors.required">
           Street and house number must be given.
@@ -195,13 +194,13 @@
         <input
           type="text"
           formControlName="city"
-          appAriaInvalid
+          appErrorMessage="city-errors"
           autocomplete="shipping address-level2"
           data-testid="city"
         />
       </label>
     </p>
-    <app-field-errors controlName="city">
+    <app-field-errors controlName="city" id="city-errors">
       <ng-template let-errors>
         <ng-container *ngIf="errors.required"> City must be given. </ng-container>
       </ng-template>
@@ -216,13 +215,13 @@
         <input
           type="text"
           formControlName="postcode"
-          appAriaInvalid
+          appErrorMessage="postcode-errors"
           autocomplete="shipping postal-code"
           data-testid="postcode"
         />
       </label>
     </p>
-    <app-field-errors controlName="postcode">
+    <app-field-errors controlName="postcode" id="postcode-errors">
       <ng-template let-errors>
         <ng-container *ngIf="errors.required"> Postcode must be given. </ng-container>
       </ng-template>
@@ -253,7 +252,7 @@
         >
         <select
           formControlName="country"
-          appAriaInvalid
+          appErrorMessage="country-errors"
           autocomplete="shipping country"
           data-testid="country"
         >
@@ -267,7 +266,7 @@
         </select>
       </label>
     </p>
-    <app-field-errors controlName="country">
+    <app-field-errors controlName="country" id="country-errors">
       <ng-template let-errors>
         <ng-container *ngIf="errors.required"> Country must be given. </ng-container>
       </ng-template>
@@ -276,8 +275,6 @@
 
   <!-- ******************************************* -->
 
-  <div>valid? {{ form.valid ? 'true' : 'false' }}</div>
-  <div>errors {{ form.errors | json }}</div>
   <p>
     <button type="submit" [disabled]="!form.valid" data-testid="submit">Submit</button>
   </p>

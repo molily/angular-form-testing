@@ -2,6 +2,7 @@ import { Component, Type } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import {
+  dispatchFakeEvent,
   expectContent,
   findEl,
   setFieldElementValue,
@@ -62,7 +63,7 @@ describe('FieldErrorComponent', () => {
     describe('invalid control, touched', () => {
       it('renders the template', () => {
         // Mark control as touched
-        input.dispatchEvent(new FocusEvent('blur'));
+        dispatchFakeEvent(input, 'blur');
         fixture.detectChanges();
         expectContent(fixture, '❗ required');
         expect(findEl(fixture, 'field-error').attributes.role).toBe('alert');
@@ -72,7 +73,7 @@ describe('FieldErrorComponent', () => {
     describe('invalid control, dirty', () => {
       it('renders the template', () => {
         // Mark control as dirty
-        input.dispatchEvent(new Event('input'));
+        dispatchFakeEvent(input, 'input');
         fixture.detectChanges();
         expectContent(fixture, '❗ required');
         expect(findEl(fixture, 'field-error').attributes.role).toBe('alert');

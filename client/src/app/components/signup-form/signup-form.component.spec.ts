@@ -4,6 +4,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { of, throwError } from 'rxjs';
 import { PasswordStrength, SignupService } from 'src/app/services/signup.service';
 import {
+  dispatchFakeEvent,
   expectText,
   findEl,
   setFieldValue,
@@ -159,9 +160,7 @@ describe('SignupFormComponent', () => {
 
       // Mark required form fields as touched.
       requiredFields.forEach((testId) => {
-        const debugElement = findEl(fixture, testId);
-        // Dispatch a synthetic blur event.
-        (debugElement.nativeElement as HTMLElement).dispatchEvent(new FocusEvent('blur'));
+        dispatchFakeEvent(findEl(fixture, testId).nativeElement, 'blur');
       });
 
       fixture.detectChanges();
