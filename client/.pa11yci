@@ -1,0 +1,11 @@
+{
+  "defaults": {
+    "runner": [
+      "axe",
+      "htmlcs"
+    ]
+  },
+  "urls": [
+    "http://localhost:4200"
+  ]
+}

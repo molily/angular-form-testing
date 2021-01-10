@@ -7,7 +7,9 @@
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "a11y": "start-server-and-test start https-get://localhost:4200/ pa11y-ci",
+    "pa11y-ci": "pa11y-ci"
   },
   "private": true,
   "license": "Unlicense",
@@ -39,7 +41,9 @@
     "karma-coverage": "~2.0.3",
     "karma-jasmine": "~4.0.0",
     "karma-jasmine-html-reporter": "^1.5.0",
+    "pa11y-ci": "^2.4.0",
     "protractor": "~7.0.0",
+    "start-server-and-test": "^1.11.7",
     "ts-node": "~8.3.0",
     "tslint": "~6.1.0",
     "typescript": "~4.0.2"

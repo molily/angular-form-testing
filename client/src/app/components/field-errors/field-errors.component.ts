@@ -19,7 +19,7 @@ interface TemplateContext {
 @Component({
   selector: 'app-field-errors',
   templateUrl: './field-errors.component.html',
-  styleUrls: ['./field-errors.component.css'],
+  styleUrls: ['./field-errors.component.scss'],
 })
 export class FieldErrorsComponent implements OnInit, OnDestroy {
   @Input()

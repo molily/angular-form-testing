@@ -4,12 +4,12 @@ import { EMPTY, merge, Observable, Subject, timer } from 'rxjs';
 import { catchError, debounceTime, first, map, mapTo, switchMap } from 'rxjs/operators';
 import { PasswordStrength, SignupService } from 'src/app/services/signup.service';
 
-const { required, maxLength, pattern, email } = Validators;
+const { email, maxLength, pattern, required, requiredTrue } = Validators;
 
 @Component({
   selector: 'app-signup-form',
   templateUrl: './signup-form.component.html',
-  styleUrls: ['./signup-form.component.css'],
+  styleUrls: ['./signup-form.component.scss'],
 })
 export class SignupFormComponent {
   public passwordSubject = new Subject<string>();
@@ -27,11 +27,12 @@ export class SignupFormComponent {
   public form = this.formBuilder.group({
     username: [
       null,
-      [required, maxLength(50), pattern('[a-zA-Z0-9_]+')],
+      [required, maxLength(50), pattern('[a-zA-Z0-9.]+')],
       (control: FormControl) => this.usernameValidator(control),
     ],
     email: [null, [required, email]],
-    password: ['', required, () => this.passwordValidator()],
+    password: [null, required, () => this.passwordValidator()],
+    tos: [null, requiredTrue],
     address: this.formBuilder.group({
       name: [null, required],
       addressLine1: [null],

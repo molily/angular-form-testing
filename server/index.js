@@ -14,7 +14,7 @@ const zxcvbn = require('zxcvbn');
  * Copyright Google LLC All Rights Reserved. MIT-style license: https://angular.io/license
  */
 const EMAIL_REGEXP = /^(?=.{1,254}$)(?=.{1,64}@)[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
-const USERNAME_REGEXP = /^[a-zA-Z0-9_]+$/;
+const USERNAME_REGEXP = /^[a-zA-Z0-9.]+$/;
 
 /**
  * Holds the users in memory.

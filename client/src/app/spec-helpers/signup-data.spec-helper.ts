@@ -16,4 +16,5 @@ export const signupData: SignupData = {
   email,
   password,
   address: { name, addressLine1, addressLine2, city, postcode, region, country },
+  tos: true,
 };

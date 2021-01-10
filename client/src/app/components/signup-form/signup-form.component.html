@@ -5,278 +5,377 @@
     <legend>Account basics</legend>
 
     <!-- ******************************************* -->
-    <p>
-      <label id="username-label">
-        <span class="label-text">
-          Username
-          <span class="label-text-necessity">(required)</span>
-        </span>
-        <input
-          type="text"
-          formControlName="username"
-          aria-describedby="username-description"
-          appErrorMessage="username-errors"
-          autocomplete="username"
-          data-testid="username"
-        />
-      </label>
-    </p>
-    <p class="field-description" id="username-description">
-      User name may only contain letters (a-z), numbers (0-9) and an underscore (_).
-      Example: beautiful_flower_2020
-    </p>
-    <app-field-errors controlName="username" id="username-errors">
-      <ng-template let-errors>
-        <ng-container *ngIf="errors.required"> User name must be given. </ng-container>
-        <ng-container *ngIf="errors.pattern">
-          User name contains invalid characters.
-        </ng-container>
-        <ng-container *ngIf="errors.maxlength">
-          User name must have less then 50 characters.
-        </ng-container>
-        <ng-container *ngIf="errors.taken">
-          User name is already taken. Please choose another one.
-        </ng-container>
-      </ng-template>
-    </app-field-errors>
-
-    <!-- ******************************************* -->
-    <p>
-      <label>
-        <span class="label-text">
-          Email
-          <span class="label-text-necessity">(required)</span>
-        </span>
-        <input
-          type="email"
-          formControlName="email"
-          aria-describedby="email-description"
-          appErrorMessage="email-errors"
-          autocomplete="email"
-          data-testid="email"
-        />
-      </label>
-    </p>
-    <p class="field-description" id="email-description">
-      Example: brigitte.bryan@example.org
-    </p>
-    <app-field-errors controlName="email" id="email-errors">
-      <ng-template let-errors>
-        <ng-container *ngIf="errors.required"> Email must be given. </ng-container>
-        <ng-container *ngIf="errors.email"> Not a valid email address. </ng-container>
-      </ng-template>
-    </app-field-errors>
-
-    <!-- ******************************************* -->
-    <p>
-      <label>
-        <span class="label-text">
-          Password
-          <span class="label-text-necessity">(required)</span>
-        </span>
-        <input
-          type="password"
-          formControlName="password"
-          aria-describedby="password-description"
-          appErrorMessage="password-errors"
-          autocomplete="new-password"
-          (input)="getPasswordStrength()"
-          data-testid="password"
-        />
-      </label>
-    </p>
-    <div
-      class="field-description password-strength"
-      id="password-description"
-      *ngIf="passwordStrength$ | async as passwordStrength"
-    >
-      <div>
-        Strength:
-        <strong *ngIf="passwordStrength.score < 3" class="password-strength-weak">
-          Weak
-        </strong>
-        <span *ngIf="passwordStrength.score === 3" class="password-strength-fair">
-          Fair
-        </span>
-        <span *ngIf="passwordStrength.score > 3" class="password-strength-strong">
-          Strong
-        </span>
-      </div>
-      <div *ngIf="passwordStrength.warning">{{ passwordStrength.warning }}</div>
-      <div *ngFor="let suggestion of passwordStrength.suggestions">
-        {{ suggestion }}
+    <div class="field-block">
+      <p class="field-and-label">
+        <label>
+          <span class="label-text">
+            Username
+            <span class="label-text-necessity">(required)</span>
+          </span>
+          <input
+            type="text"
+            formControlName="username"
+            aria-describedby="username-description"
+            aria-required="true"
+            appErrorMessage="username-errors"
+            autocomplete="username"
+            data-testid="username"
+          />
+        </label>
+      </p>
+      <div class="field-info">
+        <p class="field-description" id="username-description">
+          User name may only contain letters (a-z), numbers (0-9) and periods (.).
+          Example: beautiful.flower.2020
+        </p>
+        <app-field-errors controlName="username" id="username-errors">
+          <ng-template let-errors>
+            <ng-container *ngIf="errors.required">
+              User name must be given.
+            </ng-container>
+            <ng-container *ngIf="errors.pattern">
+              User name contains invalid characters.
+            </ng-container>
+            <ng-container *ngIf="errors.maxlength">
+              User name must have less then 50 characters.
+            </ng-container>
+            <ng-container *ngIf="errors.taken">
+              User name is already taken. Please choose another one.
+            </ng-container>
+          </ng-template>
+        </app-field-errors>
       </div>
     </div>
-    <app-field-errors controlName="password" id="password-errors">
-      <ng-template let-errors>
-        <ng-container *ngIf="errors.required"> Password must be given. </ng-container>
-        <ng-container *ngIf="errors.weak"> Password is too weak. </ng-container>
-      </ng-template>
-    </app-field-errors>
+
+    <!-- ******************************************* -->
+    <div class="field-block">
+      <div class="field-and-label">
+        <p>
+          <label>
+            <span class="label-text">
+              Email
+              <span class="label-text-necessity">(required)</span>
+            </span>
+            <input
+              type="email"
+              formControlName="email"
+              aria-describedby="email-description"
+              aria-required="true"
+              appErrorMessage="email-errors"
+              autocomplete="email"
+              data-testid="email"
+            />
+          </label>
+        </p>
+      </div>
+      <div class="field-info">
+        <p class="field-description" id="email-description">
+          Example: brigitte.bryan@example.org
+        </p>
+        <app-field-errors controlName="email" id="email-errors">
+          <ng-template let-errors>
+            <ng-container *ngIf="errors.required"> Email must be given. </ng-container>
+            <ng-container *ngIf="errors.email"> Not a valid email address. </ng-container>
+          </ng-template>
+        </app-field-errors>
+      </div>
+    </div>
+
+    <!-- ******************************************* -->
+    <div class="field-block">
+      <p class="field-and-label">
+        <label>
+          <span class="label-text">
+            Password
+            <span class="label-text-necessity">(required)</span>
+          </span>
+          <input
+            type="password"
+            formControlName="password"
+            aria-describedby="password-description"
+            aria-required="true"
+            appErrorMessage="password-errors"
+            autocomplete="new-password"
+            (input)="getPasswordStrength()"
+            data-testid="password"
+          />
+        </label>
+      </p>
+      <div class="field-info">
+        <div
+          class="field-description password-strength"
+          id="password-description"
+          *ngIf="passwordStrength$ | async as passwordStrength"
+        >
+          <p>
+            Strength:
+            <strong *ngIf="passwordStrength.score < 3" class="password-strength-weak">
+              Weak
+            </strong>
+            <span *ngIf="passwordStrength.score === 3" class="password-strength-fair">
+              Fair
+            </span>
+            <span *ngIf="passwordStrength.score > 3" class="password-strength-strong">
+              Strong
+            </span>
+          </p>
+          <p *ngIf="passwordStrength.warning">{{ passwordStrength.warning }}</p>
+          <p *ngFor="let suggestion of passwordStrength.suggestions">
+            {{ suggestion }}
+          </p>
+        </div>
+        <app-field-errors controlName="password" id="password-errors">
+          <ng-template let-errors>
+            <ng-container *ngIf="errors.required"> Password must be given. </ng-container>
+            <ng-container *ngIf="errors.weak"> Password is too weak. </ng-container>
+          </ng-template>
+        </app-field-errors>
+      </div>
+    </div>
   </fieldset>
 
   <fieldset formGroupName="address">
     <legend>Shipping address</legend>
 
     <!-- ******************************************* -->
-    <p>
-      <label>
-        <span class="label-text">
-          Full name
-          <span class="label-text-necessity">(required)</span>
-        </span>
-        <input
-          type="text"
-          formControlName="name"
-          appErrorMessage="name-errors"
-          autocomplete="name"
-          data-testid="name"
-        />
-      </label>
-    </p>
-    <app-field-errors controlName="name" id="name-errors">
-      <ng-template let-errors>
-        <ng-container *ngIf="errors.required"> Name must be given. </ng-container>
-      </ng-template>
-    </app-field-errors>
+    <div class="field-block">
+      <p class="field-and-label">
+        <label>
+          <span class="label-text">
+            Full name
+            <span class="label-text-necessity">(required)</span>
+          </span>
+          <input
+            type="text"
+            formControlName="name"
+            aria-required="true"
+            appErrorMessage="name-errors"
+            autocomplete="name"
+            data-testid="name"
+          />
+        </label>
+      </p>
+      <div class="field-info">
+        <app-field-errors controlName="name" id="name-errors">
+          <ng-template let-errors>
+            <ng-container *ngIf="errors.required"> Name must be given. </ng-container>
+          </ng-template>
+        </app-field-errors>
+      </div>
+    </div>
 
     <!-- ******************************************* -->
-    <p>
-      <label>
-        <span class="label-text">
-          Address line 1
-          <span class="label-text-necessity">(optional)</span>
-        </span>
-        <input
-          type="text"
-          formControlName="addressLine1"
-          aria-describedby="addressLine1-description"
-          autocomplete="address-line1"
-          data-testid="addressLine1"
-        />
-      </label>
-    </p>
-    <p class="field-description" id="addressLine1-description">
-      For example, a company name
-    </p>
+    <div class="field-block">
+      <p class="field-and-label">
+        <label>
+          <span class="label-text">
+            Address line 1
+            <span class="label-text-necessity">(optional)</span>
+          </span>
+          <input
+            type="text"
+            formControlName="addressLine1"
+            aria-describedby="addressLine1-description"
+            autocomplete="address-line1"
+            data-testid="addressLine1"
+          />
+        </label>
+      </p>
+      <div class="field-info">
+        <p class="field-description" id="addressLine1-description">
+          For example, a company name
+        </p>
+      </div>
+    </div>
 
     <!-- ******************************************* -->
-    <p>
-      <label>
-        <span class="label-text">
-          Street and house number
-          <span class="label-text-necessity">(required)</span>
-        </span>
-        <input
-          type="text"
-          formControlName="addressLine2"
-          appErrorMessage="addressLine2-errors"
-          autocomplete="address-line2"
-          data-testid="addressLine2"
-        />
-      </label>
-    </p>
-    <app-field-errors controlName="addressLine2" id="addressLine2-errors">
-      <ng-template let-errors>
-        <ng-container *ngIf="errors.required">
-          Street and house number must be given.
-        </ng-container>
-      </ng-template>
-    </app-field-errors>
+    <div class="field-block">
+      <p class="field-and-label">
+        <label>
+          <span class="label-text">
+            Street and house number
+            <span class="label-text-necessity">(required)</span>
+          </span>
+          <input
+            type="text"
+            formControlName="addressLine2"
+            aria-required="true"
+            appErrorMessage="addressLine2-errors"
+            autocomplete="address-line2"
+            data-testid="addressLine2"
+          />
+        </label>
+      </p>
+      <div class="field-info">
+        <app-field-errors controlName="addressLine2" id="addressLine2-errors">
+          <ng-template let-errors>
+            <ng-container *ngIf="errors.required">
+              Street and house number must be given.
+            </ng-container>
+          </ng-template>
+        </app-field-errors>
+      </div>
+    </div>
 
     <!-- ******************************************* -->
-    <p>
-      <label>
-        <span class="label-text">
-          City
-          <span class="label-text-necessity">(required)</span>
-        </span>
-        <input
-          type="text"
-          formControlName="city"
-          appErrorMessage="city-errors"
-          autocomplete="shipping address-level2"
-          data-testid="city"
-        />
-      </label>
-    </p>
-    <app-field-errors controlName="city" id="city-errors">
-      <ng-template let-errors>
-        <ng-container *ngIf="errors.required"> City must be given. </ng-container>
-      </ng-template>
-    </app-field-errors>
+    <div class="field-block">
+      <p class="field-and-label">
+        <label>
+          <span class="label-text">
+            City
+            <span class="label-text-necessity">(required)</span>
+          </span>
+          <input
+            type="text"
+            formControlName="city"
+            aria-required="true"
+            appErrorMessage="city-errors"
+            autocomplete="shipping address-level2"
+            data-testid="city"
+          />
+        </label>
+      </p>
+      <div class="field-info">
+        <app-field-errors controlName="city" id="city-errors">
+          <ng-template let-errors>
+            <ng-container *ngIf="errors.required"> City must be given. </ng-container>
+          </ng-template>
+        </app-field-errors>
+      </div>
+    </div>
 
     <!-- ******************************************* -->
-    <p>
-      <label>
-        <span class="label-text"
-          >Postcode <span class="label-text-necessity">(required)</span></span
-        >
-        <input
-          type="text"
-          formControlName="postcode"
-          appErrorMessage="postcode-errors"
-          autocomplete="shipping postal-code"
-          data-testid="postcode"
-        />
-      </label>
-    </p>
-    <app-field-errors controlName="postcode" id="postcode-errors">
-      <ng-template let-errors>
-        <ng-container *ngIf="errors.required"> Postcode must be given. </ng-container>
-      </ng-template>
-    </app-field-errors>
+    <div class="field-block">
+      <p class="field-and-label">
+        <label>
+          <span class="label-text">
+            Postcode
+            <span class="label-text-necessity">(required)</span>
+          </span>
+          <input
+            type="text"
+            formControlName="postcode"
+            aria-required="true"
+            appErrorMessage="postcode-errors"
+            autocomplete="shipping postal-code"
+            data-testid="postcode"
+          />
+        </label>
+      </p>
+      <div class="field-info">
+        <app-field-errors controlName="postcode" id="postcode-errors">
+          <ng-template let-errors>
+            <ng-container *ngIf="errors.required"> Postcode must be given. </ng-container>
+          </ng-template>
+        </app-field-errors>
+      </div>
+    </div>
 
     <!-- ******************************************* -->
-    <p>
-      <label>
-        <span class="label-text"
-          >State/Province/Region
-          <span class="label-text-necessity">(optional)</span></span
-        >
-        <input
-          type="text"
-          formControlName="region"
-          aria-describedby="region-description"
-          autocomplete="shipping address-level1"
-          data-testid="region"
-        />
-      </label>
-    </p>
+    <div class="field-block">
+      <p class="field-and-label">
+        <label>
+          <span class="label-text">
+            State/Province/Region
+            <span class="label-text-necessity">(optional)</span>
+          </span>
+          <input
+            type="text"
+            formControlName="region"
+            aria-describedby="region-description"
+            autocomplete="shipping address-level1"
+            data-testid="region"
+          />
+        </label>
+      </p>
+    </div>
 
     <!-- ******************************************* -->
-    <p>
-      <label>
-        <span class="label-text"
-          >Country <span class="label-text-necessity">(required)</span></span
-        >
-        <select
-          formControlName="country"
-          appErrorMessage="country-errors"
-          autocomplete="shipping country"
-          data-testid="country"
-        >
-          <option>Balnibarbi</option>
-          <option>Blefuscu</option>
-          <option>Brobdingnag</option>
-          <option>Glubbdubdrib</option>
-          <option>Laputa</option>
-          <option>Lilliput</option>
-          <option>Luggnagg</option>
-        </select>
-      </label>
-    </p>
-    <app-field-errors controlName="country" id="country-errors">
-      <ng-template let-errors>
-        <ng-container *ngIf="errors.required"> Country must be given. </ng-container>
-      </ng-template>
-    </app-field-errors>
+    <div class="field-block">
+      <p class="field-and-label">
+        <label>
+          <span class="label-text">
+            Country
+            <span class="label-text-necessity">(required)</span>
+          </span>
+          <select
+            formControlName="country"
+            aria-required="true"
+            appErrorMessage="country-errors"
+            autocomplete="shipping country"
+            data-testid="country"
+          >
+            <option>Balnibarbi</option>
+            <option>Blefuscu</option>
+            <option>Brobdingnag</option>
+            <option>Glubbdubdrib</option>
+            <option>Laputa</option>
+            <option>Lilliput</option>
+            <option>Luggnagg</option>
+          </select>
+        </label>
+      </p>
+      <div class="field-info">
+        <app-field-errors controlName="country" id="country-errors">
+          <ng-template let-errors>
+            <ng-container *ngIf="errors.required"> Country must be given. </ng-container>
+          </ng-template>
+        </app-field-errors>
+      </div>
+    </div>
   </fieldset>
 
   <!-- ******************************************* -->
 
+  <fieldset>
+    <legend>Terms and Services</legend>
+
+    <div class="field-block">
+      <p class="field-and-label">
+        <label>
+          <span class="checkbox-and-label-text">
+            <input
+              type="checkbox"
+              formControlName="tos"
+              aria-required="true"
+              appErrorMessage="tos-errors"
+              data-testid="tos"
+            />
+            <span class="label-text checkbox-label-text">
+              I accept the
+              <a
+                href="https://en.wikipedia.org/wiki/Terms_and_Conditions_May_Apply"
+                target="_blank"
+                >Terms and Services</a
+              >
+              and the
+              <a
+                href="https://www.nytimes.com/interactive/2019/opinion/internet-privacy-project.html"
+                >Privacy Policy</a
+              >
+              <span class="label-text-necessity"> (required)</span>
+            </span>
+          </span>
+        </label>
+      </p>
+      <div class="field-info field-info-checkbox">
+        <app-field-errors controlName="tos" id="tos-errors">
+          <ng-template let-errors>
+            <ng-container *ngIf="errors.required">
+              Please accept the Terms and Services.
+            </ng-container>
+          </ng-template>
+        </app-field-errors>
+      </div>
+    </div>
+  </fieldset>
+
+  <!-- ******************************************* -->
+
+  <p *ngIf="!form.valid">Please fill in the necessary fields above.</p>
+
   <p>
-    <button type="submit" [disabled]="!form.valid" data-testid="submit">Submit</button>
+    <button type="submit" [disabled]="!form.valid" data-testid="submit">Sign up</button>
   </p>
 
   <p

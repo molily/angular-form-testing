@@ -4,6 +4,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { of, throwError } from 'rxjs';
 import { PasswordStrength, SignupService } from 'src/app/services/signup.service';
 import {
+  click,
   dispatchFakeEvent,
   expectText,
   findEl,
@@ -34,6 +35,7 @@ const requiredFields = [
   'city',
   'postcode',
   'country',
+  'tos',
 ];
 
 const weakPassword: PasswordStrength = {
@@ -77,6 +79,10 @@ describe('SignupFormComponent', () => {
     setFieldValue(fixture, 'postcode', postcode);
     setFieldValue(fixture, 'region', region);
     setFieldValue(fixture, 'country', country);
+    // findEl(fixture, 'tos').nativeElement.checked = true;
+    // dispatchFakeEvent(findEl(fixture, 'tos').nativeElement, 'change');
+
+    click(fixture, 'tos');
   };
 
   describe('success case', () => {
