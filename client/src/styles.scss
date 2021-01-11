@@ -30,10 +30,10 @@ p {
 
 a {
   @media (prefers-color-scheme: dark) {
-    color: #88f;
+    color: #77f;
 
     &:visited {
-      color: #9b54de;
+      color: #bbb;
     }
   }
 }
@@ -44,12 +44,11 @@ input[type='number'],
 input[type='email'],
 input[type='password'],
 select {
-  min-height: 2rem;
-  padding: 0 0.5rem;
+  padding: 0.5rem;
   font-size: inherit;
   font-family: inherit;
   color: inherit;
-  line-height: 2;
+  line-height: 1;
 }
 
 button {
@@ -93,5 +92,13 @@ select.ng-invalid.ng-touched {
 
   @media (prefers-color-scheme: dark) {
     border-color: #f55;
+  }
+}
+
+.error-text {
+  color: crimson;
+
+  @media (prefers-color-scheme: dark) {
+    color: #f55;
   }
 }

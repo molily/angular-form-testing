@@ -330,53 +330,45 @@
   <fieldset>
     <legend>Terms and Services</legend>
 
-    <div class="field-block">
-      <p class="field-and-label">
-        <label>
-          <span class="checkbox-and-label-text">
-            <input
-              type="checkbox"
-              formControlName="tos"
-              aria-required="true"
-              appErrorMessage="tos-errors"
-              data-testid="tos"
-            />
-            <span class="label-text checkbox-label-text">
-              I accept the
-              <a
-                href="https://en.wikipedia.org/wiki/Terms_and_Conditions_May_Apply"
-                target="_blank"
-                >Terms and Services</a
-              >
-              and the
-              <a
-                href="https://www.nytimes.com/interactive/2019/opinion/internet-privacy-project.html"
-                >Privacy Policy</a
-              >
-              <span class="label-text-necessity"> (required)</span>
-            </span>
+    <p>
+      <label>
+        <span class="checkbox-and-label-text">
+          <input
+            type="checkbox"
+            formControlName="tos"
+            aria-required="true"
+            appErrorMessage="tos-errors"
+            data-testid="tos"
+          />
+          <span class="label-text checkbox-label-text">
+            I accept the
+            <a
+              href="https://en.wikipedia.org/wiki/Terms_and_Conditions_May_Apply"
+              target="_blank"
+              >Terms and Services</a
+            >
+            and the
+            <a
+              href="https://www.nytimes.com/interactive/2019/opinion/internet-privacy-project.html"
+              >Privacy Policy</a
+            >
+            <span class="label-text-necessity"> (required)</span>
           </span>
-        </label>
-      </p>
-      <div class="field-info field-info-checkbox">
-        <app-field-errors controlName="tos" id="tos-errors">
-          <ng-template let-errors>
-            <ng-container *ngIf="errors.required">
-              Please accept the Terms and Services.
-            </ng-container>
-          </ng-template>
-        </app-field-errors>
-      </div>
-    </div>
+        </span>
+      </label>
+    </p>
+    <app-field-errors controlName="tos" id="tos-errors">
+      <ng-template let-errors>
+        <ng-container *ngIf="errors.required">
+          Please accept the Terms and Services.
+        </ng-container>
+      </ng-template>
+    </app-field-errors>
   </fieldset>
 
   <!-- ******************************************* -->
 
   <p *ngIf="!form.valid">Please fill in the necessary fields above.</p>
-
-  <p>
-    <button type="submit" [disabled]="!form.valid" data-testid="submit">Sign up</button>
-  </p>
 
   <p
     *ngIf="submitProgress === 'success'"
@@ -384,14 +376,25 @@
     class="form-submit-success"
     data-testid="status"
   >
-    <strong>Sign-up successful</strong>
+    <strong>Sign-up successful!</strong>
   </p>
   <p
     *ngIf="submitProgress === 'error'"
     role="status"
-    class="form-submit-error"
+    class="error-text form-submit-error"
     data-testid="status"
   >
     <strong>Sign-up error</strong>
+  </p>
+
+  <p>
+    <button
+      *ngIf="submitProgress !== 'success'"
+      type="submit"
+      [disabled]="!form.valid"
+      data-testid="submit"
+    >
+      Sign up
+    </button>
   </p>
 </form>

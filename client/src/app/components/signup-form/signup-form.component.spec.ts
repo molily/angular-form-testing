@@ -4,10 +4,10 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { of, throwError } from 'rxjs';
 import { PasswordStrength, SignupService } from 'src/app/services/signup.service';
 import {
-  click,
   dispatchFakeEvent,
   expectText,
   findEl,
+  setCheckboxValue,
   setFieldValue,
 } from 'src/app/spec-helpers/element.spec-helper';
 import {
@@ -79,10 +79,7 @@ describe('SignupFormComponent', () => {
     setFieldValue(fixture, 'postcode', postcode);
     setFieldValue(fixture, 'region', region);
     setFieldValue(fixture, 'country', country);
-    // findEl(fixture, 'tos').nativeElement.checked = true;
-    // dispatchFakeEvent(findEl(fixture, 'tos').nativeElement, 'change');
-
-    click(fixture, 'tos');
+    setCheckboxValue(fixture, 'tos', true);
   };
 
   describe('success case', () => {
@@ -105,7 +102,7 @@ describe('SignupFormComponent', () => {
       expect(findEl(fixture, 'submit').properties.disabled).toBe(false);
       findEl(fixture, 'form').triggerEventHandler('submit', {});
       fixture.detectChanges();
-      expectText(fixture, 'status', 'Sign-up successful');
+      expectText(fixture, 'status', 'Sign-up successful!');
 
       expect(signupService.isUsernameTaken).toHaveBeenCalledWith(username);
       expect(signupService.getPasswordStrength).toHaveBeenCalledWith(password);

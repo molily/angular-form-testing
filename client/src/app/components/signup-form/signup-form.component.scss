@@ -1,6 +1,6 @@
 fieldset {
   position: relative;
-  padding: 3rem 1rem 0;
+  padding: 4rem 1rem 0;
   margin: 0 0 1rem;
   border-radius: 1px;
 }
@@ -9,7 +9,7 @@ legend {
   position: absolute;
   top: 1rem;
   padding: 0;
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   font-weight: bold;
 }
 
@@ -118,9 +118,4 @@ button[type='submit'] {
 
 .form-submit-error {
   background-color: blanchedalmond;
-  color: crimson;
-
-  @media (prefers-color-scheme: dark) {
-    color: #f55;
-  }
 }
