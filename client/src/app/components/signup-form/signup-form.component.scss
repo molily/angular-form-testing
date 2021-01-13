@@ -14,7 +14,7 @@ legend {
 }
 
 .field-block {
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
 }
 
 label {
@@ -43,7 +43,7 @@ button[type='submit'] {
   }
 
   .field-info {
-    padding-top: 2rem;
+    padding-top: 1.2rem + 0.5rem;
   }
 
   .field-info-checkbox {
@@ -52,8 +52,23 @@ button[type='submit'] {
 }
 
 .label-text {
-  display: block;
+  display: flex;
+  justify-content: space-between;
   padding-bottom: 0.5rem;
+}
+
+.necessity-required,
+.necessity-optional {
+  font-weight: normal;
+  font-size: 75%;
+}
+
+.necessity-optional {
+  color: #666;
+
+  @media (prefers-color-scheme: dark) {
+    color: #aaa;
+  }
 }
 
 .checkbox-and-label-text {
@@ -79,10 +94,6 @@ input[type='checkbox'].ng-invalid.ng-touched::after {
   left: 0;
   right: 0;
   background-color: rgba(220, 20, 60, 0.1);
-}
-
-.label-text-necessity {
-  font-weight: normal;
 }
 
 .password-strength-weak {
