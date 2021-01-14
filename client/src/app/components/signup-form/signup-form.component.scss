@@ -155,13 +155,20 @@ input[type='checkbox'].ng-invalid.ng-touched::after {
   border-radius: 2px;
   padding: 1.5rem 1rem;
   height: 100%;
-  transition: border-color, transform 250ms;
+  transition-property: border-color, transform, background-color;
+  transition-duration: 250ms;
+  transition-timing-function: ease;
 }
 
 .plan-radio:checked + .plan-card {
-  transform: scale(1.025);
-  border-color: white;
-  background-color: #333;
+  transform: scale(1.03);
+  border-color: #1976d2;
+  background-color: #f0f0f5;
+
+  @media (prefers-color-scheme: dark) {
+    border-color: white;
+    background-color: #333;
+  }
 }
 
 .plan-name {
