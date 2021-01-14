@@ -25,7 +25,10 @@ export class SignupFormComponent {
   );
   public showPassword = false;
 
+  public plan = this.formBuilder.control('business', required);
+
   public form = this.formBuilder.group({
+    plan: this.plan,
     username: [
       null,
       [required, maxLength(50), pattern('[a-zA-Z0-9.]+')],
@@ -36,7 +39,11 @@ export class SignupFormComponent {
     tos: [null, requiredTrue],
     address: this.formBuilder.group({
       name: [null, required],
-      addressLine1: [null],
+      addressLine1: [
+        null,
+        (control: FormControl) =>
+          this.plan.value !== 'personal' ? required(control) : {},
+      ],
       addressLine2: [null, required],
       city: [null, required],
       postcode: [null, required],
