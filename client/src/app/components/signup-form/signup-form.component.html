@@ -154,7 +154,7 @@
             <span class="necessity-required">required</span>
           </span>
           <input
-            [type]="showPassword ? 'password' : 'text'"
+            [type]="showPassword ? 'text' : 'password'"
             formControlName="password"
             aria-describedby="password-description"
             aria-required="true"
@@ -164,32 +164,35 @@
             data-testid="password"
           />
         </label>
-        <button (click)="showPassword = !showPassword">
-          {{ showPassword ? 'Show password' : 'Hide password' }}
-        </button>
       </p>
       <div class="field-info">
-        <div
-          class="field-description password-strength"
-          id="password-description"
-          *ngIf="passwordStrength$ | async as passwordStrength"
-        >
+        <div class="field-description" id="password-description">
           <p>
-            Strength:
-            <strong *ngIf="passwordStrength.score < 3" class="password-strength-weak">
-              Weak
-            </strong>
-            <span *ngIf="passwordStrength.score === 3" class="password-strength-fair">
-              Fair
-            </span>
-            <span *ngIf="passwordStrength.score > 3" class="password-strength-strong">
-              Strong
-            </span>
+            <button (click)="showPassword = !showPassword">
+              {{ showPassword ? 'Hide password' : 'Show password' }}
+            </button>
           </p>
-          <p *ngIf="passwordStrength.warning">{{ passwordStrength.warning }}</p>
-          <p *ngFor="let suggestion of passwordStrength.suggestions">
-            {{ suggestion }}
-          </p>
+          <div
+            *ngIf="passwordStrength$ | async as passwordStrength"
+            class="password-strength"
+          >
+            <p>
+              Strength:
+              <strong *ngIf="passwordStrength.score < 3" class="password-strength-weak">
+                Weak
+              </strong>
+              <span *ngIf="passwordStrength.score === 3" class="password-strength-fair">
+                Fair
+              </span>
+              <span *ngIf="passwordStrength.score > 3" class="password-strength-strong">
+                Strong
+              </span>
+            </p>
+            <p *ngIf="passwordStrength.warning">{{ passwordStrength.warning }}</p>
+            <p *ngFor="let suggestion of passwordStrength.suggestions">
+              {{ suggestion }}
+            </p>
+          </div>
         </div>
         <app-field-errors controlName="password" id="password-errors">
           <ng-template let-errors>
