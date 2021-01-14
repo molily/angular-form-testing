@@ -1,16 +1,26 @@
 fieldset {
   position: relative;
-  padding: 4rem 1rem 0;
-  margin: 0 0 1rem;
-  border-radius: 1px;
+  border-style: solid none none;
+  border-color: gray;
+  border-width: 2px;
+  border-radius: 2px;
+  margin: 0 0 2rem;
+  padding: 4rem 0 0;
+
+  @media (min-width: 40rem) {
+    padding: 4rem 2rem 0;
+  }
 }
 
 legend {
   position: absolute;
   top: 1rem;
-  padding: 0;
   font-size: 1.4rem;
   font-weight: bold;
+  padding: 0 0 2rem;
+
+  @media (min-width: 40rem) {
+  }
 }
 
 .field-block {
@@ -60,7 +70,7 @@ button[type='submit'] {
 .necessity-required,
 .necessity-optional {
   font-weight: normal;
-  font-size: 75%;
+  font-size: 80%;
 }
 
 .necessity-optional {
@@ -96,6 +106,83 @@ input[type='checkbox'].ng-invalid.ng-touched::after {
   background-color: rgba(220, 20, 60, 0.1);
 }
 
+.plans {
+  padding: 0;
+  list-style-type: none;
+
+  @media (min-width: 40rem) {
+    display: flex;
+    margin: 0 -0.5rem;
+  }
+}
+
+.plan {
+  text-align: center;
+
+  @media (min-width: 40rem) {
+    flex: 1;
+    margin: 0 0.5rem;
+  }
+}
+
+.plan + .plan {
+  margin-top: 1rem;
+
+  @media (min-width: 40rem) {
+    margin-top: 0;
+  }
+}
+
+.plan-label {
+  height: 100%;
+}
+
+.plan-radio {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 1px;
+  width: 1px;
+  overflow: hidden;
+  clip: rect(1px, 1px, 1px, 1px);
+}
+
+.plan-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border: 2px solid gray;
+  border-radius: 2px;
+  padding: 1.5rem 1rem;
+  height: 100%;
+  transition: border-color 250ms;
+}
+
+.plan-radio:checked + .plan-card {
+  border-color: white;
+  background-color: #333;
+}
+
+.plan-name {
+  font-size: 1.5rem;
+
+  @media (min-width: 40rem) {
+    font-size: 1.6rem;
+  }
+}
+
+.plan-description {
+  font-weight: normal;
+
+  @media (min-width: 40rem) {
+    font-size: 1.2rem;
+  }
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
 .password-strength-weak {
   color: crimson;
 }
@@ -111,6 +198,7 @@ input[type='checkbox'].ng-invalid.ng-touched::after {
 button[type='submit'] {
   width: 100%;
   font-size: 1.2rem;
+  padding: 1rem;
 
   @media (min-width: 40rem) {
     max-width: 20rem;

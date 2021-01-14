@@ -23,6 +23,7 @@ export class SignupFormComponent {
     this.passwordSubject.pipe(mapTo(null)),
     this.passwordStrengthFromServer$,
   );
+  public showPassword = false;
 
   public form = this.formBuilder.group({
     username: [

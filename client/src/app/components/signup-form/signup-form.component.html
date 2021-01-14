@@ -1,6 +1,58 @@
 <h1>Sign-up</h1>
 
 <form [formGroup]="form" (ngSubmit)="onSubmit()" data-testid="form">
+  <fieldset formGroupName="plan">
+    <legend>Choose plan</legend>
+
+    <!-- ******************************************* -->
+    <div class="field-block">
+      <ul class="plans">
+        <li class="plan">
+          <label class="plan-label">
+            <input type="radio" name="planType" value="personal" class="plan-radio" />
+            <div class="plan-card">
+              <p class="plan-name"><strong>Personal</strong></p>
+              <p class="plan-description">$ 1 per month</p>
+              <p class="plan-description">Free 30 day trial</p>
+              <p class="plan-description">No credit card required</p>
+            </div>
+          </label>
+        </li>
+        <li class="plan">
+          <label class="plan-label">
+            <input
+              type="radio"
+              name="planType"
+              value="business"
+              class="plan-radio"
+              checked="checked"
+            />
+            <div class="plan-card">
+              <p class="plan-name"><strong>Business</strong></p>
+              <p class="plan-description">$ 10 per month</p>
+              <p class="plan-description">Free 30 day trial</p>
+              <p class="plan-description">No credit card required</p>
+            </div>
+          </label>
+        </li>
+        <li class="plan">
+          <label class="plan-label">
+            <input type="radio" name="planType" value="nonProfit" class="plan-radio" />
+            <div class="plan-card">
+              <p class="plan-name">
+                <strong>Education &<br />Non-profit</strong>
+              </p>
+              <p class="plan-description">Free forever</p>
+              <p class="plan-description">
+                For students, schools and non-profit organizations
+              </p>
+            </div>
+          </label>
+        </li>
+      </ul>
+    </div>
+  </fieldset>
+
   <fieldset>
     <legend>Account basics</legend>
 
@@ -90,7 +142,7 @@
             <span class="necessity-required">required</span>
           </span>
           <input
-            type="password"
+            [type]="showPassword ? 'password' : 'text'"
             formControlName="password"
             aria-describedby="password-description"
             aria-required="true"
@@ -100,6 +152,9 @@
             data-testid="password"
           />
         </label>
+        <button (click)="showPassword = !showPassword">
+          {{ showPassword ? 'Show password' : 'Hide password' }}
+        </button>
       </p>
       <div class="field-info">
         <div
@@ -135,7 +190,7 @@
   </fieldset>
 
   <fieldset formGroupName="address">
-    <legend>Shipping address</legend>
+    <legend>Address</legend>
 
     <!-- ******************************************* -->
     <div class="field-block">
@@ -183,7 +238,7 @@
       </p>
       <div class="field-info">
         <p class="field-description" id="addressLine1-description">
-          For example, a company name
+          Company name, if applicable
         </p>
       </div>
     </div>
