@@ -9,7 +9,10 @@ export interface PasswordStrength {
   suggestions: string[];
 }
 
+export type Plan = 'personal' | 'business' | 'non-profit';
+
 export interface SignupData {
+  plan: Plan;
   username: string;
   email: string;
   password: string;

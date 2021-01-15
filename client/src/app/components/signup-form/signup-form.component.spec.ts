@@ -55,7 +55,18 @@ describe('SignupFormComponent', () => {
   let fixture: ComponentFixture<SignupFormComponent>;
   let signupService: jasmine.SpyObj<SignupService>;
 
-  const setup = async () => {
+  const setup = async (
+    signupServiceReturnValues?: jasmine.SpyObjMethodNames<SignupService>,
+  ) => {
+    signupService = jasmine.createSpyObj<SignupService>('SignupService', {
+      // Successful responses per default
+      isUsernameTaken: of(false),
+      getPasswordStrength: of(strongPassword),
+      signup: of({ success: true }),
+      // Overwrite with given return values
+      ...signupServiceReturnValues,
+    });
+
     await TestBed.configureTestingModule({
       imports: [ReactiveFormsModule],
       declarations: [SignupFormComponent, FieldErrorsComponent],
@@ -84,11 +95,6 @@ describe('SignupFormComponent', () => {
 
   describe('success case', () => {
     beforeEach(async () => {
-      signupService = jasmine.createSpyObj<SignupService>('SignupService', {
-        isUsernameTaken: of(false),
-        getPasswordStrength: of(strongPassword),
-        signup: of({ success: true }),
-      });
       await setup();
     });
 
@@ -112,13 +118,12 @@ describe('SignupFormComponent', () => {
 
   describe('error case', () => {
     it('fails if the username is taken', fakeAsync(async () => {
-      signupService = jasmine.createSpyObj<SignupService>('SignupService', {
+      await setup({
         // Let the API return that the username is taken
         isUsernameTaken: of(true),
         getPasswordStrength: of(strongPassword),
         signup: of({ success: true }),
       });
-      await setup();
 
       fillForm();
 
@@ -133,13 +138,12 @@ describe('SignupFormComponent', () => {
     }));
 
     it('fails if the password is too weak', fakeAsync(async () => {
-      signupService = jasmine.createSpyObj<SignupService>('SignupService', {
+      await setup({
         isUsernameTaken: of(false),
         // Let the API return that the password is weak
         getPasswordStrength: of(weakPassword),
         signup: of({ success: true }),
       });
-      await setup();
 
       fillForm();
 
@@ -154,11 +158,6 @@ describe('SignupFormComponent', () => {
     }));
 
     it('marks fields as required', async () => {
-      signupService = jasmine.createSpyObj<SignupService>('SignupService', {
-        isUsernameTaken: of(false),
-        getPasswordStrength: of(strongPassword),
-        signup: of({ success: true }),
-      });
       await setup();
 
       // Mark required form fields as touched.
@@ -169,21 +168,49 @@ describe('SignupFormComponent', () => {
       fixture.detectChanges();
 
       requiredFields.forEach((testId) => {
-        expect(findEl(fixture, testId).classes['ng-invalid']).toBe(
-          true,
-          `${testId} must be required`,
+        const el = findEl(fixture, testId);
+        expect(el.attributes['aria-required']).toBe(
+          'true',
+          `${testId} must be marked as aria-required`,
         );
+        expect(el.classes['ng-invalid']).toBe(true, `${testId} must be required`);
       });
     });
 
+    it('requires address line 1 for business and non-profit plans', async () => {
+      await setup();
+
+      // Initial state
+      const el = findEl(fixture, 'addressLine1');
+      expect('ng-invalid' in el.classes).toBe(false);
+      expect(el.attributes['aria-required']).toBe('false');
+
+      // Change plan
+      setCheckboxValue(fixture, 'plan-business', true);
+
+      // Mark field as touched.
+      dispatchFakeEvent(el.nativeElement, 'blur');
+      fixture.detectChanges();
+
+      expect(el.attributes['aria-required']).toBe('true');
+      expect(el.classes['ng-invalid']).toBe(true);
+
+      // Change plan
+      setCheckboxValue(fixture, 'plan-non-profit', true);
+
+      fixture.detectChanges();
+
+      expect(el.attributes['aria-required']).toBe('true');
+      expect(el.classes['ng-invalid']).toBe(true);
+    });
+
     it('handles signup failure', fakeAsync(async () => {
-      signupService = jasmine.createSpyObj<SignupService>('SignupService', {
+      await setup({
         isUsernameTaken: of(false),
         getPasswordStrength: of(strongPassword),
         // Let the API report a failure
         signup: throwError(new Error('Validation failed')),
       });
-      await setup();
 
       fillForm();
 

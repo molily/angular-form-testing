@@ -5,22 +5,19 @@ fieldset {
   border-width: 2px;
   border-radius: 2px;
   margin: 0 0 2rem;
-  padding: 4rem 0 0;
+  padding: 5rem 0 0;
 
   @media (min-width: 40rem) {
-    padding: 4rem 2rem 0;
+    padding-left: 2rem;
+    padding-right: 2rem;
   }
 }
 
 legend {
   position: absolute;
-  top: 1rem;
+  top: 1.5rem;
   font-size: 1.4rem;
   font-weight: bold;
-  padding: 0 0 2rem;
-
-  @media (min-width: 40rem) {
-  }
 }
 
 .field-block {
@@ -166,7 +163,6 @@ input[type='checkbox'].ng-invalid.ng-touched::after {
   background-color: #f0f0f5;
 
   @media (prefers-color-scheme: dark) {
-    border-color: white;
     background-color: #333;
   }
 }

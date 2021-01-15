@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormControl, ValidationErrors, Validators } from '@angular/forms';
 import { EMPTY, merge, Observable, Subject, timer } from 'rxjs';
 import { catchError, debounceTime, first, map, mapTo, switchMap } from 'rxjs/operators';
-import { PasswordStrength, SignupService } from 'src/app/services/signup.service';
+import { PasswordStrength, Plan, SignupService } from 'src/app/services/signup.service';
 
 const { email, maxLength, pattern, required, requiredTrue } = Validators;
 
@@ -12,6 +12,10 @@ const { email, maxLength, pattern, required, requiredTrue } = Validators;
   styleUrls: ['./signup-form.component.scss'],
 })
 export class SignupFormComponent {
+  public PERSONAL: Plan = 'personal';
+  public BUSINESS: Plan = 'business';
+  public NON_PROFIT: Plan = 'non-profit';
+
   public passwordSubject = new Subject<string>();
   public passwordStrengthFromServer$ = this.passwordSubject.pipe(
     debounceTime(1000),
@@ -25,7 +29,8 @@ export class SignupFormComponent {
   );
   public showPassword = false;
 
-  public plan = this.formBuilder.control('business', required);
+  public plan = this.formBuilder.control('personal', required);
+  public addressLine1 = this.formBuilder.control(null);
 
   public form = this.formBuilder.group({
     plan: this.plan,
@@ -39,11 +44,7 @@ export class SignupFormComponent {
     tos: [null, requiredTrue],
     address: this.formBuilder.group({
       name: [null, required],
-      addressLine1: [
-        null,
-        (control: FormControl) =>
-          this.plan.value !== 'personal' ? required(control) : {},
-      ],
+      addressLine1: this.addressLine1,
       addressLine2: [null, required],
       city: [null, required],
       postcode: [null, required],
@@ -56,7 +57,16 @@ export class SignupFormComponent {
 
   public submitProgress: 'idle' | 'success' | 'error' = 'idle';
 
-  constructor(private signupService: SignupService, private formBuilder: FormBuilder) {}
+  constructor(private signupService: SignupService, private formBuilder: FormBuilder) {
+    this.plan.valueChanges.subscribe((plan: Plan) => {
+      if (plan !== this.PERSONAL) {
+        this.addressLine1.setValidators(required);
+      } else {
+        this.addressLine1.setValidators(null);
+      }
+      this.addressLine1.updateValueAndValidity();
+    });
+  }
 
   public usernameValidator(control: FormControl): Observable<ValidationErrors> {
     return timer(1000).pipe(

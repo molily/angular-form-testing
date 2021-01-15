@@ -2,7 +2,7 @@
 
 <form [formGroup]="form" (ngSubmit)="onSubmit()" data-testid="form">
   <fieldset>
-    <legend>Choose plan</legend>
+    <legend>Choose your plan</legend>
 
     <!-- ******************************************* -->
     <div class="field-block">
@@ -13,8 +13,9 @@
               type="radio"
               formControlName="plan"
               name="plan"
-              value="personal"
+              [value]="PERSONAL"
               class="plan-radio"
+              data-testid="plan-personal"
             />
             <div class="plan-card">
               <p class="plan-name"><strong>Personal</strong></p>
@@ -30,8 +31,9 @@
               type="radio"
               formControlName="plan"
               name="plan"
-              value="business"
+              [value]="BUSINESS"
               class="plan-radio"
+              data-testid="plan-business"
             />
             <div class="plan-card">
               <p class="plan-name"><strong>Business</strong></p>
@@ -47,8 +49,9 @@
               type="radio"
               formControlName="plan"
               name="plan"
-              value="nonProfit"
+              [value]="NON_PROFIT"
               class="plan-radio"
+              data-testid="plan-non-profit"
             />
             <div class="plan-card">
               <p class="plan-name">
@@ -169,7 +172,7 @@
         <div class="field-description" id="password-description">
           <p>
             <button (click)="showPassword = !showPassword">
-              {{ showPassword ? 'Hide password' : 'Show password' }}
+              {{ showPassword ? '🔒 Hide password' : '👁️ Show password' }}
             </button>
           </p>
           <div
@@ -239,22 +242,20 @@
       <p class="field-and-label">
         <label>
           <span class="label-text">
-            <ng-container *ngIf="plan.value === 'personal'">
-              Address line 1
-            </ng-container>
-            <ng-container *ngIf="plan.value === 'business'"> Company </ng-container>
-            <ng-container *ngIf="plan.value === 'nonProfit'"> Organization </ng-container>
-            <span *ngIf="plan.value !== 'personal'" class="necessity-required">
+            <ng-container *ngIf="plan.value === PERSONAL"> Address line 1 </ng-container>
+            <ng-container *ngIf="plan.value === BUSINESS"> Company </ng-container>
+            <ng-container *ngIf="plan.value === NON_PROFIT"> Organization </ng-container>
+            <span *ngIf="plan.value !== PERSONAL" class="necessity-required">
               required
             </span>
-            <span *ngIf="plan.value === 'personal'" class="necessity-optional">
+            <span *ngIf="plan.value === PERSONAL" class="necessity-optional">
               optional
             </span>
           </span>
           <input
             type="text"
             formControlName="addressLine1"
-            [aria-required]="form.controls.plan.value !== 'personal'"
+            [attr.aria-required]="form.controls.plan.value !== PERSONAL"
             appErrorMessage="addressLine1-errors"
             autocomplete="address-line1"
             data-testid="addressLine1"
@@ -265,13 +266,12 @@
         <app-field-errors controlName="addressLine1" id="addressLine1-errors">
           <ng-template let-errors>
             <ng-container *ngIf="errors.required">
-              <ng-container *ngIf="form.controls.plan.value === 'business'"
-                >Company</ng-container
-              >
-              <ng-container *ngIf="form.controls.plan.value === 'nonProfit'"
-                >Organization</ng-container
-              >
-              must be given.
+              <ng-container *ngIf="form.controls.plan.value === BUSINESS">
+                Company must be given.
+              </ng-container>
+              <ng-container *ngIf="form.controls.plan.value === NON_PROFIT">
+                Organization must be given.
+              </ng-container>
             </ng-container>
           </ng-template>
         </app-field-errors>

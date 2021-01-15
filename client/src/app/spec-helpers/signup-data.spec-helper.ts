@@ -12,6 +12,7 @@ export const region = 'Upper South';
 export const country = 'Luggnagg';
 
 export const signupData: SignupData = {
+  plan: 'personal',
   username,
   email,
   password,
