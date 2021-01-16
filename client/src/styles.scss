@@ -1,3 +1,8 @@
+@use 'sass:color';
+@use 'app/sass/variables' as v;
+@use 'app/sass/mixins' as m;
+@use 'app/sass/functions' as f;
+
 *,
 *::before,
 *::after {
@@ -15,7 +20,7 @@ body {
   background-color: #fdfdfd;
   color: black;
 
-  @media (prefers-color-scheme: dark) {
+  @include m.dark-scheme {
     background-color: #202020;
     color: #fdfdfd;
   }
@@ -32,7 +37,7 @@ p {
 }
 
 a {
-  @media (prefers-color-scheme: dark) {
+  @include m.dark-scheme {
     color: #77f;
 
     &:visited {
@@ -47,61 +52,89 @@ input[type='number'],
 input[type='email'],
 input[type='password'],
 select {
-  padding: 0.5rem;
+  padding: 0 0.5rem;
   font-size: inherit;
   font-family: inherit;
   color: inherit;
-  line-height: 1;
+  line-height: 2;
 }
 
 button {
   min-width: 2rem;
   border: 0;
-  background-color: #1976d2;
+  background-color: v.$primary-color;
   color: #fff;
 
   &:disabled {
-    background-color: #5e758d;
-    color: #ddd;
+    background-color: color.adjust(v.$primary-color, $lightness: -25%, $saturation: -50%);
+    color: #aaa;
   }
 }
+
+$focus-shadow: 0 0 0.5px 3px rgba(v.$primary-color, 0.8);
 
 input[type='text'],
 input[type='number'],
 input[type='email'],
 input[type='password'],
 select {
-  background-color: #fff;
-  border: 2px solid #1976d2;
+  background-color: v.$field-background-light;
+  border: 2px solid v.$field-border-light;
   border-radius: 1px;
 
-  @media (prefers-color-scheme: dark) {
-    background-color: #202020;
+  @include m.dark-scheme {
+    border-color: v.$field-border-dark;
+    background-color: v.$field-background-dark;
+  }
+
+  &:focus {
+    outline: 0;
+    box-shadow: $focus-shadow;
   }
 }
 
 input[type='checkbox'] {
   width: 1.5rem;
   height: 1.5rem;
+
+  &:focus {
+    outline: 0;
+    box-shadow: $focus-shadow;
+  }
 }
+
+$error-shadow: 0 0 0 4px rgba(220, 20, 60, 0.1) inset;
 
 input[type='text'].ng-invalid.ng-touched,
 input[type='number'].ng-invalid.ng-touched,
 input[type='email'].ng-invalid.ng-touched,
 input[type='password'].ng-invalid.ng-touched,
 select.ng-invalid.ng-touched {
-  border-color: crimson;
-  box-shadow: 0 0 0 4px rgba(220, 20, 60, 0.1) inset;
+  border-color: v.$error-color-light;
+  box-shadow: $error-shadow;
 
-  @media (prefers-color-scheme: dark) {
-    border-color: #f55;
+  @include m.dark-scheme {
+    border-color: v.$error-color-dark;
+  }
+
+  &:focus {
+    box-shadow: $focus-shadow, $error-shadow;
   }
 }
 
-.error-text {
-  color: crimson;
+select {
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  appearance: none;
+  color: inherit;
+  background-position: right 10px center;
+  background-size: auto 35%;
+  background-repeat: no-repeat;
+  $fill-light: f.str-replace('#{v.$field-border-light}', '#', '%23');
+  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="292.4" height="292.4"><path fill="#{$fill-light}" d="M287 69.4a17.6 17.6 0 0 0-13-5.4H18.4c-5 0-9.3 1.8-12.9 5.4A17.6 17.6 0 0 0 0 82.2c0 5 1.8 9.3 5.4 12.9l128 127.9c3.6 3.6 7.8 5.4 12.8 5.4s9.2-1.8 12.8-5.4L287 95c3.5-3.5 5.4-7.8 5.4-12.8 0-5-1.9-9.2-5.5-12.8z"/></svg>');
 
-  @media (prefers-color-scheme: dark) {
-    color: #f55;
+  @include m.dark-scheme {
+    $fill-dark: f.str-replace('#{v.$field-border-dark}', '#', '%23');
+    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="292.4" height="292.4"><path fill="#{$fill-dark}" d="M287 69.4a17.6 17.6 0 0 0-13-5.4H18.4c-5 0-9.3 1.8-12.9 5.4A17.6 17.6 0 0 0 0 82.2c0 5 1.8 9.3 5.4 12.9l128 127.9c3.6 3.6 7.8 5.4 12.8 5.4s9.2-1.8 12.8-5.4L287 95c3.5-3.5 5.4-7.8 5.4-12.8 0-5-1.9-9.2-5.5-12.8z"/></svg>');
   }
 }
