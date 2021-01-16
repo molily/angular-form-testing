@@ -41,14 +41,6 @@ button[type='submit'] {
   width: 100%;
 }
 
-.error-text {
-  color: v.$error-color-light;
-
-  @include m.dark-scheme {
-    color: v.$error-color-dark;
-  }
-}
-
 @media (min-width: 40rem) {
   .field-block {
     display: flex;
