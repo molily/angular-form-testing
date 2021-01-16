@@ -62,16 +62,21 @@ select {
 button {
   min-width: 2rem;
   border: 0;
+  padding: 0.5rem;
+  line-height: 1.2;
   background-color: v.$primary-color;
   color: #fff;
 
   &:disabled {
-    background-color: color.adjust(v.$primary-color, $lightness: -25%, $saturation: -50%);
-    color: #aaa;
+    background-color: color.adjust(v.$primary-color, $lightness: -20%, $saturation: -70%);
+    color: #bbb;
+  }
+
+  &:focus {
+    outline: 0;
+    box-shadow: v.$focus-shadow;
   }
 }
-
-$focus-shadow: 0 0 0.5px 3px rgba(v.$primary-color, 0.8);
 
 input[type='text'],
 input[type='number'],
@@ -89,7 +94,8 @@ select {
 
   &:focus {
     outline: 0;
-    box-shadow: $focus-shadow;
+    border-color: v.$primary-color;
+    box-shadow: v.$focus-shadow;
   }
 }
 
@@ -99,7 +105,7 @@ input[type='checkbox'] {
 
   &:focus {
     outline: 0;
-    box-shadow: $focus-shadow;
+    box-shadow: v.$focus-shadow;
   }
 }
 
@@ -118,7 +124,8 @@ select.ng-invalid.ng-touched {
   }
 
   &:focus {
-    box-shadow: $focus-shadow, $error-shadow;
+    border-color: v.$primary-color;
+    box-shadow: v.$focus-shadow, $error-shadow;
   }
 }
 
