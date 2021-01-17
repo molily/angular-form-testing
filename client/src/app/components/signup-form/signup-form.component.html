@@ -158,6 +158,7 @@
           </span>
           <input
             [type]="showPassword ? 'text' : 'password'"
+            id="password"
             formControlName="password"
             aria-describedby="password-description"
             aria-required="true"
@@ -171,7 +172,11 @@
       <div class="field-info">
         <div class="field-description" id="password-description">
           <p>
-            <button (click)="showPassword = !showPassword">
+            <button
+              (click)="showPassword = !showPassword"
+              aria-controls="password"
+              data-testid="show-password"
+            >
               {{ showPassword ? '🔒 Hide password' : '👁️ Show password' }}
             </button>
           </p>

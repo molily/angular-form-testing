@@ -4,6 +4,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { of, throwError } from 'rxjs';
 import { PasswordStrength, SignupService } from 'src/app/services/signup.service';
 import {
+  click,
   dispatchFakeEvent,
   expectText,
   findEl,
@@ -202,6 +203,24 @@ describe('SignupFormComponent', () => {
 
       expect(el.attributes['aria-required']).toBe('true');
       expect(el.classes['ng-invalid']).toBe(true);
+    });
+
+    it('toggle the password display', async () => {
+      await setup();
+
+      setFieldValue(fixture, 'password', 'top secret');
+      const passwordEl = findEl(fixture, 'password');
+      expect(passwordEl.attributes.type).toBe('password');
+
+      click(fixture, 'show-password');
+      fixture.detectChanges();
+
+      expect(passwordEl.attributes.type).toBe('text');
+
+      click(fixture, 'show-password');
+      fixture.detectChanges();
+
+      expect(passwordEl.attributes.type).toBe('password');
     });
 
     it('handles signup failure', fakeAsync(async () => {
