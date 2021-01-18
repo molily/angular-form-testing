@@ -11,7 +11,8 @@ const zxcvbn = require('zxcvbn');
  * Regular expression for validating an email address.
  * Taken from Angular:
  * https://github.com/angular/angular/blob/43b4940c9d595c542a00795976bc3168dd0ca5af/packages/forms/src/validators.ts#L68-L99
- * Copyright Google LLC All Rights Reserved. MIT-style license: https://angular.io/license
+ * Copyright Google LLC All Rights Reserved.
+ * MIT-style license: https://angular.io/license
  */
 const EMAIL_REGEXP = /^(?=.{1,254}$)(?=.{1,64}@)[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
 const USERNAME_REGEXP = /^[a-zA-Z0-9.]+$/;
@@ -19,7 +20,26 @@ const USERNAME_REGEXP = /^[a-zA-Z0-9.]+$/;
 /**
  * Holds the users in memory.
  */
-const users = new Map();
+const users = [];
+
+const isUsernameSyntaxValid = (username) =>
+  typeof username === 'string' &&
+  username !== '' &&
+  username.length <= 50 &&
+  USERNAME_REGEXP.test(username);
+
+const isEmailSyntaxValid = (email) =>
+  typeof email === 'string' &&
+  email !== '' &&
+  email.length <= 100 &&
+  EMAIL_REGEXP.test(email);
+
+const isPasswordSyntaxValid = (password) =>
+  typeof password === 'string' && password !== '' && password.length <= 200;
+
+const isUsernameTaken = (username) => users.some((user) => user.username == username);
+
+const isEmailTaken = (email) => users.some((user) => user.email == email);
 
 const app = express();
 app.use(express.json());
@@ -32,7 +52,7 @@ app.use(apiLimiter);
 
 app.post('/password-strength', (req, res) => {
   const { password } = req.body;
-  if (!(typeof password === 'string' && password !== '' && password.length < 100)) {
+  if (!isPasswordSyntaxValid(password)) {
     res.sendStatus(400);
     return;
   }
@@ -46,11 +66,25 @@ app.post('/password-strength', (req, res) => {
 
 app.post('/username-taken', (req, res) => {
   const { username } = req.body;
-  if (!(typeof username === 'string' && username !== '' && username.length < 100)) {
+  if (!isUsernameSyntaxValid(username)) {
     res.sendStatus(400);
     return;
   }
-  res.send({ usernameTaken: users.has(username) });
+  res.send({ usernameTaken: isUsernameTaken(username) });
+});
+
+app.post('/email-taken', (req, res) => {
+  const { email } = req.body;
+  console.log('email', email);
+  if (!isEmailSyntaxValid(email)) {
+    console.log('email syntax invalid');
+    res.sendStatus(400);
+    return;
+  }
+  console.log('email syntax valid');
+  const emailTaken = isEmailTaken(email);
+  console.log('emailTaken', emailTaken);
+  res.send({ emailTaken: isEmailTaken(email) });
 });
 
 const validateSignup = (body) => {
@@ -60,19 +94,13 @@ const validateSignup = (body) => {
     return errors;
   }
   const { username, email, password } = body;
-  if (
-    !(
-      typeof username === 'string' &&
-      USERNAME_REGEXP.test(username) &&
-      !users.has(username)
-    )
-  ) {
+  if (!(isUsernameSyntaxValid(username) && !isUsernameTaken(username))) {
     errors.push('Username invalid');
   }
-  if (!(typeof email === 'string' && EMAIL_REGEXP.test(email))) {
+  if (!(isEmailSyntaxValid(email) && !isEmailTaken(email))) {
     errors.push('Email invalid');
   }
-  if (!(typeof password === 'string' && zxcvbn(password).score >= 3)) {
+  if (!(isPasswordSyntaxValid(password) && zxcvbn(password).score >= 3)) {
     errors.push('Password invalid');
   }
   return errors;
@@ -85,7 +113,7 @@ app.post('/signup', (req, res) => {
     return;
   }
   const { username, email, password } = req.body;
-  users.set(username, {
+  users.push({
     username,
     email,
     password,

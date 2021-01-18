@@ -40,6 +40,12 @@ export class SignupService {
       .pipe(map((result) => result.usernameTaken));
   }
 
+  public isEmailTaken(email: string): Observable<boolean> {
+    return this.http
+      .post<{ emailTaken: boolean }>('/api/email-taken', { email })
+      .pipe(map((result) => result.emailTaken));
+  }
+
   public getPasswordStrength(password: string): Observable<PasswordStrength> {
     return this.http.post<PasswordStrength>('/api/password-strength', { password });
   }

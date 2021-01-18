@@ -1,5 +1,11 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormControl, ValidationErrors, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormGroup,
+  ValidationErrors,
+  Validators,
+} from '@angular/forms';
 import { EMPTY, merge, Observable, Subject, timer } from 'rxjs';
 import { catchError, debounceTime, first, map, mapTo, switchMap } from 'rxjs/operators';
 import { PasswordStrength, Plan, SignupService } from 'src/app/services/signup.service';
@@ -29,22 +35,23 @@ export class SignupFormComponent {
   );
   public showPassword = false;
 
-  public plan = this.formBuilder.control('personal', required);
-  public addressLine1 = this.formBuilder.control(null);
-
   public form = this.formBuilder.group({
-    plan: this.plan,
+    plan: ['personal', required],
     username: [
       null,
       [required, maxLength(50), pattern('[a-zA-Z0-9.]+')],
-      (control: FormControl) => this.usernameValidator(control),
+      (control: AbstractControl) => this.validateUsername(control.value),
     ],
-    email: [null, [required, email]],
-    password: [null, required, () => this.passwordValidator()],
+    email: [
+      null,
+      [required, email, maxLength(100)],
+      (control: AbstractControl) => this.validateEmail(control.value),
+    ],
+    password: [null, required, () => this.validatePassword()],
     tos: [null, requiredTrue],
     address: this.formBuilder.group({
       name: [null, required],
-      addressLine1: this.addressLine1,
+      addressLine1: [null],
       addressLine2: [null, required],
       city: [null, required],
       postcode: [null, required],
@@ -52,6 +59,9 @@ export class SignupFormComponent {
       country: [null, required],
     }),
   });
+
+  public plan = this.form.controls.plan;
+  public addressLine1 = (this.form.controls.address as FormGroup).controls.addressLine1;
 
   public passwordStrength?: PasswordStrength;
 
@@ -68,10 +78,17 @@ export class SignupFormComponent {
     });
   }
 
-  public usernameValidator(control: FormControl): Observable<ValidationErrors> {
+  public validateUsername(username: string): Observable<ValidationErrors> {
     return timer(1000).pipe(
-      switchMap(() => this.signupService.isUsernameTaken(control.value)),
+      switchMap(() => this.signupService.isUsernameTaken(username)),
       map((usernameTaken) => (usernameTaken ? { taken: true } : {})),
+    );
+  }
+
+  public validateEmail(username: string): Observable<ValidationErrors> {
+    return timer(1000).pipe(
+      switchMap(() => this.signupService.isEmailTaken(username)),
+      map((emailTaken) => (emailTaken ? { taken: true } : {})),
     );
   }
 
@@ -79,7 +96,7 @@ export class SignupFormComponent {
     this.passwordSubject.next(this.form.controls.password.value);
   }
 
-  public passwordValidator(): Observable<ValidationErrors> {
+  public validatePassword(): Observable<ValidationErrors> {
     return this.passwordStrength$.pipe(
       first((passwordStrength) => passwordStrength !== null),
       map((passwordStrength) =>

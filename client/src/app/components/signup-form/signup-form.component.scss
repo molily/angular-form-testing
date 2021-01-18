@@ -205,6 +205,10 @@ input[type='checkbox'].ng-invalid.ng-touched::after {
 
 .password-strength-weak {
   color: v.$error-color-light;
+
+  @include m.dark-scheme {
+    color: v.$error-color-dark;
+  }
 }
 
 .password-strength-fair {
@@ -212,7 +216,11 @@ input[type='checkbox'].ng-invalid.ng-touched::after {
 }
 
 .password-strength-strong {
-  color: green;
+  color: v.$success-color-light;
+
+  @include m.dark-scheme {
+    color: v.$success-color-dark;
+  }
 }
 
 button[type='submit'] {

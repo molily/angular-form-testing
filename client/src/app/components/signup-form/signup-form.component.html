@@ -143,6 +143,9 @@
           <ng-template let-errors>
             <ng-container *ngIf="errors.required"> Email must be given. </ng-container>
             <ng-container *ngIf="errors.email"> Not a valid email address. </ng-container>
+            <ng-container *ngIf="errors.maxlength">
+              Email must have less then 100 characters.
+            </ng-container>
           </ng-template>
         </app-field-errors>
       </div>
