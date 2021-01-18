@@ -62,6 +62,7 @@ describe('SignupFormComponent', () => {
     signupService = jasmine.createSpyObj<SignupService>('SignupService', {
       // Successful responses per default
       isUsernameTaken: of(false),
+      isEmailTaken: of(false),
       getPasswordStrength: of(strongPassword),
       signup: of({ success: true }),
       // Overwrite with given return values
@@ -112,139 +113,156 @@ describe('SignupFormComponent', () => {
       expectText(fixture, 'status', 'Sign-up successful!');
 
       expect(signupService.isUsernameTaken).toHaveBeenCalledWith(username);
+      expect(signupService.isEmailTaken).toHaveBeenCalledWith(email);
       expect(signupService.getPasswordStrength).toHaveBeenCalledWith(password);
       expect(signupService.signup).toHaveBeenCalledWith(signupData);
     }));
   });
 
-  describe('error case', () => {
-    it('fails if the username is taken', fakeAsync(async () => {
-      await setup({
-        // Let the API return that the username is taken
-        isUsernameTaken: of(true),
-        getPasswordStrength: of(strongPassword),
-        signup: of({ success: true }),
-      });
-
-      fillForm();
-
-      // Wait for async validators
-      tick(1000);
-      fixture.detectChanges();
-      expect(findEl(fixture, 'submit').properties.disabled).toBe(true);
-
-      expect(signupService.isUsernameTaken).toHaveBeenCalledWith(username);
-      expect(signupService.getPasswordStrength).toHaveBeenCalledWith(password);
-      expect(signupService.signup).not.toHaveBeenCalled();
-    }));
-
-    it('fails if the password is too weak', fakeAsync(async () => {
-      await setup({
-        isUsernameTaken: of(false),
-        // Let the API return that the password is weak
-        getPasswordStrength: of(weakPassword),
-        signup: of({ success: true }),
-      });
-
-      fillForm();
-
-      // Wait for async validators
-      tick(1000);
-      fixture.detectChanges();
-      expect(findEl(fixture, 'submit').properties.disabled).toBe(true);
-
-      expect(signupService.isUsernameTaken).toHaveBeenCalledWith(username);
-      expect(signupService.getPasswordStrength).toHaveBeenCalledWith(password);
-      expect(signupService.signup).not.toHaveBeenCalled();
-    }));
-
-    it('marks fields as required', async () => {
-      await setup();
-
-      // Mark required form fields as touched.
-      requiredFields.forEach((testId) => {
-        dispatchFakeEvent(findEl(fixture, testId).nativeElement, 'blur');
-      });
-
-      fixture.detectChanges();
-
-      requiredFields.forEach((testId) => {
-        const el = findEl(fixture, testId);
-        expect(el.attributes['aria-required']).toBe(
-          'true',
-          `${testId} must be marked as aria-required`,
-        );
-        expect(el.classes['ng-invalid']).toBe(true, `${testId} must be required`);
-      });
+  it('fails if the username is taken', fakeAsync(async () => {
+    await setup({
+      // Let the API return that the username is taken
+      isUsernameTaken: of(true),
     });
 
-    it('requires address line 1 for business and non-profit plans', async () => {
-      await setup();
+    fillForm();
 
-      // Initial state
-      const el = findEl(fixture, 'addressLine1');
-      expect('ng-invalid' in el.classes).toBe(false);
-      expect(el.attributes['aria-required']).toBe('false');
+    // Wait for async validators
+    tick(1000);
+    fixture.detectChanges();
+    expect(findEl(fixture, 'submit').properties.disabled).toBe(true);
 
-      // Change plan
-      setCheckboxValue(fixture, 'plan-business', true);
+    expect(signupService.isUsernameTaken).toHaveBeenCalledWith(username);
+    expect(signupService.isEmailTaken).toHaveBeenCalledWith(email);
+    expect(signupService.getPasswordStrength).toHaveBeenCalledWith(password);
+    expect(signupService.signup).not.toHaveBeenCalled();
+  }));
 
-      // Mark field as touched.
-      dispatchFakeEvent(el.nativeElement, 'blur');
-      fixture.detectChanges();
-
-      expect(el.attributes['aria-required']).toBe('true');
-      expect(el.classes['ng-invalid']).toBe(true);
-
-      // Change plan
-      setCheckboxValue(fixture, 'plan-non-profit', true);
-
-      fixture.detectChanges();
-
-      expect(el.attributes['aria-required']).toBe('true');
-      expect(el.classes['ng-invalid']).toBe(true);
+  it('fails if the email is taken', fakeAsync(async () => {
+    await setup({
+      // Let the API return that the email is taken
+      isEmailTaken: of(true),
     });
 
-    it('toggle the password display', async () => {
-      await setup();
+    fillForm();
 
-      setFieldValue(fixture, 'password', 'top secret');
-      const passwordEl = findEl(fixture, 'password');
-      expect(passwordEl.attributes.type).toBe('password');
+    // Wait for async validators
+    tick(1000);
+    fixture.detectChanges();
+    expect(findEl(fixture, 'submit').properties.disabled).toBe(true);
 
-      click(fixture, 'show-password');
-      fixture.detectChanges();
+    expect(signupService.isUsernameTaken).toHaveBeenCalledWith(username);
+    expect(signupService.isEmailTaken).toHaveBeenCalledWith(email);
+    expect(signupService.getPasswordStrength).toHaveBeenCalledWith(password);
+    expect(signupService.signup).not.toHaveBeenCalled();
+  }));
 
-      expect(passwordEl.attributes.type).toBe('text');
-
-      click(fixture, 'show-password');
-      fixture.detectChanges();
-
-      expect(passwordEl.attributes.type).toBe('password');
+  it('fails if the password is too weak', fakeAsync(async () => {
+    await setup({
+      isUsernameTaken: of(false),
+      // Let the API return that the password is weak
+      getPasswordStrength: of(weakPassword),
+      signup: of({ success: true }),
     });
 
-    it('handles signup failure', fakeAsync(async () => {
-      await setup({
-        isUsernameTaken: of(false),
-        getPasswordStrength: of(strongPassword),
-        // Let the API report a failure
-        signup: throwError(new Error('Validation failed')),
-      });
+    fillForm();
 
-      fillForm();
+    // Wait for async validators
+    tick(1000);
+    fixture.detectChanges();
+    expect(findEl(fixture, 'submit').properties.disabled).toBe(true);
 
-      expect(findEl(fixture, 'submit').properties.disabled).toBe(true);
-      // Wait for async validators
-      tick(1000);
-      fixture.detectChanges();
-      expect(findEl(fixture, 'submit').properties.disabled).toBe(false);
-      findEl(fixture, 'form').triggerEventHandler('submit', {});
-      fixture.detectChanges();
-      expectText(fixture, 'status', 'Sign-up error');
+    expect(signupService.isUsernameTaken).toHaveBeenCalledWith(username);
+    expect(signupService.getPasswordStrength).toHaveBeenCalledWith(password);
+    expect(signupService.signup).not.toHaveBeenCalled();
+  }));
 
-      expect(signupService.isUsernameTaken).toHaveBeenCalledWith(username);
-      expect(signupService.getPasswordStrength).toHaveBeenCalledWith(password);
-      expect(signupService.signup).toHaveBeenCalledWith(signupData);
-    }));
+  it('marks fields as required', async () => {
+    await setup();
+
+    // Mark required form fields as touched.
+    requiredFields.forEach((testId) => {
+      dispatchFakeEvent(findEl(fixture, testId).nativeElement, 'blur');
+    });
+
+    fixture.detectChanges();
+
+    requiredFields.forEach((testId) => {
+      const el = findEl(fixture, testId);
+      expect(el.attributes['aria-required']).toBe(
+        'true',
+        `${testId} must be marked as aria-required`,
+      );
+      expect(el.classes['ng-invalid']).toBe(true, `${testId} must be required`);
+    });
   });
+
+  it('requires address line 1 for business and non-profit plans', async () => {
+    await setup();
+
+    // Initial state
+    const el = findEl(fixture, 'addressLine1');
+    expect('ng-invalid' in el.classes).toBe(false);
+    expect(el.attributes['aria-required']).toBe('false');
+
+    // Change plan
+    setCheckboxValue(fixture, 'plan-business', true);
+
+    // Mark field as touched.
+    dispatchFakeEvent(el.nativeElement, 'blur');
+    fixture.detectChanges();
+
+    expect(el.attributes['aria-required']).toBe('true');
+    expect(el.classes['ng-invalid']).toBe(true);
+
+    // Change plan
+    setCheckboxValue(fixture, 'plan-non-profit', true);
+
+    fixture.detectChanges();
+
+    expect(el.attributes['aria-required']).toBe('true');
+    expect(el.classes['ng-invalid']).toBe(true);
+  });
+
+  it('toggle the password display', async () => {
+    await setup();
+
+    setFieldValue(fixture, 'password', 'top secret');
+    const passwordEl = findEl(fixture, 'password');
+    expect(passwordEl.attributes.type).toBe('password');
+
+    click(fixture, 'show-password');
+    fixture.detectChanges();
+
+    expect(passwordEl.attributes.type).toBe('text');
+
+    click(fixture, 'show-password');
+    fixture.detectChanges();
+
+    expect(passwordEl.attributes.type).toBe('password');
+  });
+
+  it('handles signup failure', fakeAsync(async () => {
+    await setup({
+      isUsernameTaken: of(false),
+      getPasswordStrength: of(strongPassword),
+      // Let the API report a failure
+      signup: throwError(new Error('Validation failed')),
+    });
+
+    fillForm();
+
+    expect(findEl(fixture, 'submit').properties.disabled).toBe(true);
+    // Wait for async validators
+    tick(1000);
+    fixture.detectChanges();
+    expect(findEl(fixture, 'submit').properties.disabled).toBe(false);
+    findEl(fixture, 'form').triggerEventHandler('submit', {});
+    fixture.detectChanges();
+    expectText(fixture, 'status', 'Sign-up error');
+
+    expect(signupService.isUsernameTaken).toHaveBeenCalledWith(username);
+    expect(signupService.getPasswordStrength).toHaveBeenCalledWith(password);
+    expect(signupService.signup).toHaveBeenCalledWith(signupData);
+  }));
 });

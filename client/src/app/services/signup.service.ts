@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
 
 export interface PasswordStrength {
   score: number;
@@ -35,22 +36,28 @@ export class SignupService {
   constructor(public http: HttpClient) {}
 
   public isUsernameTaken(username: string): Observable<boolean> {
-    return this.http
-      .post<{ usernameTaken: boolean }>('/api/username-taken', { username })
-      .pipe(map((result) => result.usernameTaken));
+    return this.post<{ usernameTaken: boolean }>('/username-taken', {
+      username,
+    }).pipe(map((result) => result.usernameTaken));
   }
 
   public isEmailTaken(email: string): Observable<boolean> {
-    return this.http
-      .post<{ emailTaken: boolean }>('/api/email-taken', { email })
-      .pipe(map((result) => result.emailTaken));
+    return this.post<{ emailTaken: boolean }>('/email-taken', { email }).pipe(
+      map((result) => result.emailTaken),
+    );
   }
 
   public getPasswordStrength(password: string): Observable<PasswordStrength> {
-    return this.http.post<PasswordStrength>('/api/password-strength', { password });
+    return this.post<PasswordStrength>('/password-strength', {
+      password,
+    });
   }
 
   public signup(data: SignupData): Observable<{ success: true }> {
-    return this.http.post<{ success: true }>('/api/signup', data);
+    return this.post<{ success: true }>('/signup', data);
+  }
+
+  private post<Response>(path: string, data: any): Observable<Response> {
+    return this.http.post<Response>(`${environment.signupServiceUrl}${path}`, data);
   }
 }

@@ -9,7 +9,7 @@ import { signupData } from '../spec-helpers/signup-data.spec-helper';
 import { PasswordStrength, SignupService } from './signup.service';
 
 const username = 'minnie';
-
+const email = 'minnie@mouse.net';
 const password = 'abcdef';
 
 const passwordStrength: PasswordStrength = {
@@ -40,9 +40,28 @@ describe('SignupService', () => {
       result = otherResult;
     });
 
-    const request = controller.expectOne({ method: 'POST', url: '/api/username-taken' });
+    const request = controller.expectOne({
+      method: 'POST',
+      url: 'http://localhost:4200/api/username-taken',
+    });
     expect(request.request.body).toEqual({ username });
     request.flush({ usernameTaken: true });
+
+    expect(result).toBe(true);
+  });
+
+  it('checks if the email is taken', () => {
+    let result: boolean | undefined;
+    service.isEmailTaken(email).subscribe((otherResult) => {
+      result = otherResult;
+    });
+
+    const request = controller.expectOne({
+      method: 'POST',
+      url: 'http://localhost:4200/api/email-taken',
+    });
+    expect(request.request.body).toEqual({ email });
+    request.flush({ emailTaken: true });
 
     expect(result).toBe(true);
   });
@@ -55,7 +74,7 @@ describe('SignupService', () => {
 
     const request = controller.expectOne({
       method: 'POST',
-      url: '/api/password-strength',
+      url: 'http://localhost:4200/api/password-strength',
     });
     expect(request.request.body).toEqual({ password });
     request.flush(passwordStrength);
@@ -71,7 +90,7 @@ describe('SignupService', () => {
 
     const request = controller.expectOne({
       method: 'POST',
-      url: '/api/signup',
+      url: 'http://localhost:4200/api/signup',
     });
     expect(request.request.body).toEqual(signupData);
     request.flush({ success: true });

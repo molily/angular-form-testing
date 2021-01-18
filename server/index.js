@@ -75,15 +75,11 @@ app.post('/username-taken', (req, res) => {
 
 app.post('/email-taken', (req, res) => {
   const { email } = req.body;
-  console.log('email', email);
   if (!isEmailSyntaxValid(email)) {
-    console.log('email syntax invalid');
     res.sendStatus(400);
     return;
   }
-  console.log('email syntax valid');
   const emailTaken = isEmailTaken(email);
-  console.log('emailTaken', emailTaken);
   res.send({ emailTaken: isEmailTaken(email) });
 });
 
