@@ -1,7 +1,9 @@
 import { NO_ERRORS_SCHEMA } from '@angular/compiler';
+import { DebugElement } from '@angular/core';
 import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { of, throwError } from 'rxjs';
+import { ErrorMessageDirective } from 'src/app/directives/error-message.directive';
 import { PasswordStrength, SignupService } from 'src/app/services/signup.service';
 import {
   click,
@@ -71,7 +73,7 @@ describe('SignupFormComponent', () => {
 
     await TestBed.configureTestingModule({
       imports: [ReactiveFormsModule],
-      declarations: [SignupFormComponent, FieldErrorsComponent],
+      declarations: [SignupFormComponent, FieldErrorsComponent, ErrorMessageDirective],
       providers: [{ provide: SignupService, useValue: signupService }],
       schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
@@ -93,6 +95,10 @@ describe('SignupFormComponent', () => {
     setFieldValue(fixture, 'region', region);
     setFieldValue(fixture, 'country', country);
     setCheckboxValue(fixture, 'tos', true);
+  };
+
+  const markFieldAsTouched = (element: DebugElement) => {
+    dispatchFakeEvent(element.nativeElement, 'blur');
   };
 
   describe('success case', () => {
@@ -180,48 +186,69 @@ describe('SignupFormComponent', () => {
   it('marks fields as required', async () => {
     await setup();
 
-    // Mark required form fields as touched.
+    // Mark required fields as touched
     requiredFields.forEach((testId) => {
-      dispatchFakeEvent(findEl(fixture, testId).nativeElement, 'blur');
+      markFieldAsTouched(findEl(fixture, testId));
     });
 
     fixture.detectChanges();
 
     requiredFields.forEach((testId) => {
       const el = findEl(fixture, testId);
+
+      // Check aria-required attribute
       expect(el.attributes['aria-required']).toBe(
         'true',
         `${testId} must be marked as aria-required`,
       );
+
+      // Check ng-invalid class
       expect(el.classes['ng-invalid']).toBe(true, `${testId} must be required`);
+
+      // Check aria-errormessage attribute
+      const errormessageId = el.attributes['aria-errormessage'];
+      if (!errormessageId) {
+        throw new Error(`Error message id for ${testId} not present`);
+      }
+      // Check element with error message
+      const errormessageEl = document.getElementById(errormessageId);
+      if (!errormessageEl) {
+        throw new Error(`Error message element for ${testId} not found`);
+      }
+      if (errormessageId === 'tos-errors') {
+        expect(errormessageEl.textContent).toContain(
+          'Please accept the Terms and Services',
+        );
+      } else {
+        expect(errormessageEl.textContent).toContain('must be given');
+      }
     });
   });
 
   it('requires address line 1 for business and non-profit plans', async () => {
     await setup();
 
-    // Initial state
-    const el = findEl(fixture, 'addressLine1');
-    expect('ng-invalid' in el.classes).toBe(false);
-    expect(el.attributes['aria-required']).toBe('false');
+    // Initial state (personal plan)
+    const addressLine1El = findEl(fixture, 'addressLine1');
+    expect('ng-invalid' in addressLine1El.classes).toBe(false);
+    expect(addressLine1El.attributes['aria-required']).toBe('false');
 
-    // Change plan
+    // Change plan to business
     setCheckboxValue(fixture, 'plan-business', true);
 
-    // Mark field as touched.
-    dispatchFakeEvent(el.nativeElement, 'blur');
+    markFieldAsTouched(addressLine1El);
     fixture.detectChanges();
 
-    expect(el.attributes['aria-required']).toBe('true');
-    expect(el.classes['ng-invalid']).toBe(true);
+    expect(addressLine1El.attributes['aria-required']).toBe('true');
+    expect(addressLine1El.classes['ng-invalid']).toBe(true);
 
-    // Change plan
+    // Change plan to non-profit
     setCheckboxValue(fixture, 'plan-non-profit', true);
 
     fixture.detectChanges();
 
-    expect(el.attributes['aria-required']).toBe('true');
-    expect(el.classes['ng-invalid']).toBe(true);
+    expect(addressLine1El.attributes['aria-required']).toBe('true');
+    expect(addressLine1El.classes['ng-invalid']).toBe(true);
   });
 
   it('toggle the password display', async () => {

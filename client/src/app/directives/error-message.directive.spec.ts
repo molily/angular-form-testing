@@ -133,7 +133,7 @@ describe('ErrorMessageDirective', () => {
 
   describe('without control', () => {
     @Component({
-      template: ` <input appErrorMessage="errors" /> `,
+      template: `<input appErrorMessage="errors" />`,
     })
     class HostComponent {}
 
