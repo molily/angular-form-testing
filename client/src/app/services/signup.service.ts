@@ -33,7 +33,7 @@ export interface SignupData {
   providedIn: 'root',
 })
 export class SignupService {
-  constructor(public http: HttpClient) {}
+  constructor(private http: HttpClient) {}
 
   public isUsernameTaken(username: string): Observable<boolean> {
     return this.post<{ usernameTaken: boolean }>('/username-taken', {
