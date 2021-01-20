@@ -74,7 +74,6 @@ describe('SignupFormComponent', () => {
       imports: [ReactiveFormsModule],
       declarations: [SignupFormComponent, ControlErrorsComponent, ErrorMessageDirective],
       providers: [{ provide: SignupService, useValue: signupService }],
-      schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
 
     fixture = TestBed.createComponent(SignupFormComponent);
