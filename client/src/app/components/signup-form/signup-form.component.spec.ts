@@ -27,7 +27,7 @@ import {
   username,
 } from 'src/app/spec-helpers/signup-data.spec-helper';
 
-import { FieldErrorsComponent } from '../field-errors/field-errors.component';
+import { ControlErrorsComponent } from '../control-errors/control-errors.component';
 import { SignupFormComponent } from './signup-form.component';
 
 const requiredFields = [
@@ -54,7 +54,6 @@ const strongPassword: PasswordStrength = {
 };
 
 describe('SignupFormComponent', () => {
-  let component: SignupFormComponent;
   let fixture: ComponentFixture<SignupFormComponent>;
   let signupService: jasmine.SpyObj<SignupService>;
 
@@ -73,13 +72,12 @@ describe('SignupFormComponent', () => {
 
     await TestBed.configureTestingModule({
       imports: [ReactiveFormsModule],
-      declarations: [SignupFormComponent, FieldErrorsComponent, ErrorMessageDirective],
+      declarations: [SignupFormComponent, ControlErrorsComponent, ErrorMessageDirective],
       providers: [{ provide: SignupService, useValue: signupService }],
       schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
 
     fixture = TestBed.createComponent(SignupFormComponent);
-    component = fixture.componentInstance;
     fixture.detectChanges();
   };
 

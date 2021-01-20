@@ -17,11 +17,11 @@ interface TemplateContext {
 }
 
 @Component({
-  selector: 'app-field-errors',
-  templateUrl: './field-errors.component.html',
-  styleUrls: ['./field-errors.component.scss'],
+  selector: 'app-control-errors',
+  templateUrl: './control-errors.component.html',
+  styleUrls: ['./control-errors.component.scss'],
 })
-export class FieldErrorsComponent implements OnInit, OnDestroy {
+export class ControlErrorsComponent implements OnInit, OnDestroy {
   @Input()
   public control?: AbstractControl;
 

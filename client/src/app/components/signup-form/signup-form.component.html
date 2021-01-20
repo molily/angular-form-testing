@@ -95,7 +95,7 @@
           User name may only contain letters (a-z), numbers (0-9) and periods (.).
           Example: beautiful.flower.2020
         </p>
-        <app-field-errors controlName="username" id="username-errors">
+        <app-control-errors controlName="username" id="username-errors">
           <ng-template let-errors>
             <ng-container *ngIf="errors.required">
               User name must be given.
@@ -110,7 +110,7 @@
               User name is already taken. Please choose another one.
             </ng-container>
           </ng-template>
-        </app-field-errors>
+        </app-control-errors>
       </div>
     </div>
 
@@ -139,7 +139,7 @@
         <p class="field-description" id="email-description">
           Example: brigitte.bryan@example.org
         </p>
-        <app-field-errors controlName="email" id="email-errors">
+        <app-control-errors controlName="email" id="email-errors">
           <ng-template let-errors>
             <ng-container *ngIf="errors.required"> Email must be given. </ng-container>
             <ng-container *ngIf="errors.email"> Not a valid email address. </ng-container>
@@ -147,7 +147,7 @@
               Email must have less then 100 characters.
             </ng-container>
           </ng-template>
-        </app-field-errors>
+        </app-control-errors>
       </div>
     </div>
 
@@ -205,12 +205,12 @@
             </p>
           </div>
         </div>
-        <app-field-errors controlName="password" id="password-errors">
+        <app-control-errors controlName="password" id="password-errors">
           <ng-template let-errors>
             <ng-container *ngIf="errors.required"> Password must be given. </ng-container>
             <ng-container *ngIf="errors.weak"> Password is too weak. </ng-container>
           </ng-template>
-        </app-field-errors>
+        </app-control-errors>
       </div>
     </div>
   </fieldset>
@@ -237,11 +237,11 @@
         </label>
       </p>
       <div class="field-info">
-        <app-field-errors controlName="name" id="name-errors">
+        <app-control-errors controlName="name" id="name-errors">
           <ng-template let-errors>
             <ng-container *ngIf="errors.required"> Name must be given. </ng-container>
           </ng-template>
-        </app-field-errors>
+        </app-control-errors>
       </div>
     </div>
 
@@ -271,7 +271,7 @@
         </label>
       </p>
       <div class="field-info">
-        <app-field-errors controlName="addressLine1" id="addressLine1-errors">
+        <app-control-errors controlName="addressLine1" id="addressLine1-errors">
           <ng-template let-errors>
             <ng-container *ngIf="errors.required">
               <ng-container *ngIf="form.controls.plan.value === BUSINESS">
@@ -282,7 +282,7 @@
               </ng-container>
             </ng-container>
           </ng-template>
-        </app-field-errors>
+        </app-control-errors>
       </div>
     </div>
 
@@ -305,13 +305,13 @@
         </label>
       </p>
       <div class="field-info">
-        <app-field-errors controlName="addressLine2" id="addressLine2-errors">
+        <app-control-errors controlName="addressLine2" id="addressLine2-errors">
           <ng-template let-errors>
             <ng-container *ngIf="errors.required">
               Street and house number must be given.
             </ng-container>
           </ng-template>
-        </app-field-errors>
+        </app-control-errors>
       </div>
     </div>
 
@@ -334,11 +334,11 @@
         </label>
       </p>
       <div class="field-info">
-        <app-field-errors controlName="city" id="city-errors">
+        <app-control-errors controlName="city" id="city-errors">
           <ng-template let-errors>
             <ng-container *ngIf="errors.required"> City must be given. </ng-container>
           </ng-template>
-        </app-field-errors>
+        </app-control-errors>
       </div>
     </div>
 
@@ -361,11 +361,11 @@
         </label>
       </p>
       <div class="field-info">
-        <app-field-errors controlName="postcode" id="postcode-errors">
+        <app-control-errors controlName="postcode" id="postcode-errors">
           <ng-template let-errors>
             <ng-container *ngIf="errors.required"> Postcode must be given. </ng-container>
           </ng-template>
-        </app-field-errors>
+        </app-control-errors>
       </div>
     </div>
 
@@ -414,11 +414,11 @@
         </label>
       </p>
       <div class="field-info">
-        <app-field-errors controlName="country" id="country-errors">
+        <app-control-errors controlName="country" id="country-errors">
           <ng-template let-errors>
             <ng-container *ngIf="errors.required"> Country must be given. </ng-container>
           </ng-template>
-        </app-field-errors>
+        </app-control-errors>
       </div>
     </div>
   </fieldset>
@@ -455,13 +455,13 @@
         </span>
       </label>
     </p>
-    <app-field-errors controlName="tos" id="tos-errors">
+    <app-control-errors controlName="tos" id="tos-errors">
       <ng-template let-errors>
         <ng-container *ngIf="errors.required">
           Please accept the Terms and Services.
         </ng-container>
       </ng-template>
-    </app-field-errors>
+    </app-control-errors>
   </fieldset>
 
   <!-- ******************************************* -->

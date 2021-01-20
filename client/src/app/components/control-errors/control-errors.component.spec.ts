@@ -8,9 +8,9 @@ import {
   setFieldElementValue,
 } from 'src/app/spec-helpers/element.spec-helper';
 
-import { FieldErrorsComponent } from './field-errors.component';
+import { ControlErrorsComponent } from './control-errors.component';
 
-describe('FieldErrorComponent', () => {
+describe('ControlErrorComponent', () => {
   let fixture: ComponentFixture<object>;
 
   let input: HTMLInputElement;
@@ -18,7 +18,7 @@ describe('FieldErrorComponent', () => {
   const setup = async (HostComponent: Type<any>) => {
     await TestBed.configureTestingModule({
       imports: [ReactiveFormsModule],
-      declarations: [FieldErrorsComponent, HostComponent],
+      declarations: [ControlErrorsComponent, HostComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(HostComponent);
@@ -31,11 +31,11 @@ describe('FieldErrorComponent', () => {
     @Component({
       template: `
         <input [formControl]="control" data-testid="input" />
-        <app-field-errors [control]="control">
+        <app-control-errors [control]="control">
           <ng-template let-errors>
             <ng-container *ngIf="errors.required">required</ng-container>
           </ng-template>
-        </app-field-errors>
+        </app-control-errors>
       `,
     })
     class HostComponent {
@@ -66,7 +66,7 @@ describe('FieldErrorComponent', () => {
         dispatchFakeEvent(input, 'blur');
         fixture.detectChanges();
         expectContent(fixture, '❗ required');
-        expect(findEl(fixture, 'field-error').attributes.role).toBe('alert');
+        expect(findEl(fixture, 'control-error').attributes.role).toBe('alert');
       });
     });
 
@@ -76,7 +76,7 @@ describe('FieldErrorComponent', () => {
         dispatchFakeEvent(input, 'input');
         fixture.detectChanges();
         expectContent(fixture, '❗ required');
-        expect(findEl(fixture, 'field-error').attributes.role).toBe('alert');
+        expect(findEl(fixture, 'control-error').attributes.role).toBe('alert');
       });
     });
   });
@@ -86,11 +86,11 @@ describe('FieldErrorComponent', () => {
       template: `
         <form [formGroup]="form">
           <input formControlName="control" data-testid="input" />
-          <app-field-errors controlName="control">
+          <app-control-errors controlName="control">
             <ng-template let-errors>
               <ng-container *ngIf="errors.required">required</ng-container>
             </ng-template>
-          </app-field-errors>
+          </app-control-errors>
         </form>
       `,
     })
@@ -123,7 +123,7 @@ describe('FieldErrorComponent', () => {
         input.dispatchEvent(new FocusEvent('blur'));
         fixture.detectChanges();
         expectContent(fixture, '❗ required');
-        expect(findEl(fixture, 'field-error').attributes.role).toBe('alert');
+        expect(findEl(fixture, 'control-error').attributes.role).toBe('alert');
       });
     });
 
@@ -133,7 +133,7 @@ describe('FieldErrorComponent', () => {
         input.dispatchEvent(new Event('input'));
         fixture.detectChanges();
         expectContent(fixture, '❗ required');
-        expect(findEl(fixture, 'field-error').attributes.role).toBe('alert');
+        expect(findEl(fixture, 'control-error').attributes.role).toBe('alert');
       });
     });
   });
@@ -141,11 +141,11 @@ describe('FieldErrorComponent', () => {
   describe('without control', () => {
     @Component({
       template: `
-        <app-field-errors>
+        <app-control-errors>
           <ng-template let-errors>
             <ng-container *ngIf="errors.required">required</ng-container>
           </ng-template>
-        </app-field-errors>
+        </app-control-errors>
       `,
     })
     class HostComponent {}
@@ -153,7 +153,7 @@ describe('FieldErrorComponent', () => {
     it('throws an error', async () => {
       await TestBed.configureTestingModule({
         imports: [ReactiveFormsModule],
-        declarations: [FieldErrorsComponent, HostComponent],
+        declarations: [ControlErrorsComponent, HostComponent],
       }).compileComponents();
 
       fixture = TestBed.createComponent(HostComponent);
@@ -168,7 +168,7 @@ describe('FieldErrorComponent', () => {
     @Component({
       template: `
         <input [formControl]="control" data-testid="input" />
-        <app-field-errors [control]="control"></app-field-errors>
+        <app-control-errors [control]="control"></app-control-errors>
       `,
     })
     class HostComponent {
@@ -184,7 +184,7 @@ describe('FieldErrorComponent', () => {
       input.dispatchEvent(new Event('input'));
       fixture.detectChanges();
       expectContent(fixture, '❗ ');
-      expect(findEl(fixture, 'field-error').attributes.role).toBe('alert');
+      expect(findEl(fixture, 'control-error').attributes.role).toBe('alert');
     });
   });
 });
