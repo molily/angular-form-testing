@@ -7,6 +7,8 @@ const zxcvbn = require('zxcvbn');
  * and just simulates input validation and signup. Do not use it in production.
  */
 
+const PORT = process.env.PORT || 3000;
+
 /**
  * Regular expression for validating an email address.
  * Taken from Angular:
@@ -118,5 +120,5 @@ app.post('/signup', (req, res) => {
   res.send({ success: true });
 });
 
-app.listen(3000);
+app.listen(PORT);
 console.log('Server running.');
