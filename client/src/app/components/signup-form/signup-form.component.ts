@@ -106,13 +106,15 @@ export class SignupFormComponent {
   }
 
   public onSubmit(): void {
-    this.signupService.signup(this.form.value).subscribe(
-      () => {
-        this.submitProgress = 'success';
-      },
-      () => {
-        this.submitProgress = 'error';
-      },
-    );
+    if (this.form.valid) {
+      this.signupService.signup(this.form.value).subscribe(
+        () => {
+          this.submitProgress = 'success';
+        },
+        () => {
+          this.submitProgress = 'error';
+        },
+      );
+    }
   }
 }

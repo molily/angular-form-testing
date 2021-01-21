@@ -146,6 +146,9 @@
             <ng-container *ngIf="errors.maxlength">
               Email must have less then 100 characters.
             </ng-container>
+            <ng-container *ngIf="errors.taken">
+              Email is already taken. Please choose another one.
+            </ng-container>
           </ng-template>
         </app-control-errors>
       </div>
@@ -176,6 +179,7 @@
         <div class="field-description" id="password-description">
           <p>
             <button
+              type="button"
               (click)="showPassword = !showPassword"
               aria-controls="password"
               data-testid="show-password"

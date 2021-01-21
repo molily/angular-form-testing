@@ -26,6 +26,11 @@ const USERNAME_REGEXP = /^[a-zA-Z0-9.]+$/;
 const ALLOWED_ORIGINS = ['https://molily.github.io'];
 
 /**
+ * Available plans
+ */
+const PLANS = ['personal', 'business', 'non-profit'];
+
+/**
  * Holds the users in memory.
  */
 const users = [];
@@ -91,33 +96,47 @@ app.post('/email-taken', (req, res) => {
     res.sendStatus(400);
     return;
   }
-  const emailTaken = isEmailTaken(email);
   res.send({ emailTaken: isEmailTaken(email) });
 });
 
+const isNonEmptyString = (object, property) => {
+  const value = object[property];
+  return typeof value === 'string' && value !== '';
+};
+
 const validateSignup = (body) => {
-  const errors = [];
   if (!body) {
-    errors.push('Bad request');
-    return errors;
+    return { valid: false, error: 'Bad request' };
   }
-  const { username, email, password } = body;
-  if (!(isUsernameSyntaxValid(username) && !isUsernameTaken(username))) {
-    errors.push('Username invalid');
+  const { plan, username, email, password, address, tos } = body;
+  const checks = {
+    plan: () => PLANS.includes(plan),
+    username: () => isUsernameSyntaxValid(username) && !isUsernameTaken(username),
+    email: () => isEmailSyntaxValid(email) && !isEmailTaken(email),
+    password: () => isPasswordSyntaxValid(password) && zxcvbn(password).score >= 3,
+    address: () => !!body.address,
+    name: () => isNonEmptyString(address, 'name'),
+    addressLine1: () =>
+      plan !== 'personal' ? isNonEmptyString(address, 'addressLine1', address) : true,
+    addressLine2: () => isNonEmptyString(address, 'addressLine2'),
+    city: () => isNonEmptyString(address, 'city'),
+    postcode: () => isNonEmptyString(address, 'postcode'),
+    country: () => isNonEmptyString(address, 'country'),
+    tos: () => tos === true,
+  };
+  for (const [name, check] of Object.entries(checks)) {
+    const valid = check();
+    if (!valid) {
+      return { valid: false, error: `${name} is invalid` };
+    }
   }
-  if (!(isEmailSyntaxValid(email) && !isEmailTaken(email))) {
-    errors.push('Email invalid');
-  }
-  if (!(isPasswordSyntaxValid(password) && zxcvbn(password).score >= 3)) {
-    errors.push('Password invalid');
-  }
-  return errors;
+  return { valid: true };
 };
 
 app.post('/signup', (req, res) => {
-  const errors = validateSignup(req.body);
-  if (errors.length > 0) {
-    res.status(400).send({ errors });
+  const validationResult = validateSignup(req.body);
+  if (!validationResult.valid) {
+    res.status(400).send({ error: validationResult.error });
     return;
   }
   const { username, email, password } = req.body;
