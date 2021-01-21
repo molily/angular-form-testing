@@ -1,5 +1,6 @@
 const express = require('express');
 const rateLimit = require('express-rate-limit');
+const cors = require('cors');
 const zxcvbn = require('zxcvbn');
 
 /**
@@ -18,6 +19,11 @@ const PORT = process.env.PORT || 3000;
  */
 const EMAIL_REGEXP = /^(?=.{1,254}$)(?=.{1,64}@)[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
 const USERNAME_REGEXP = /^[a-zA-Z0-9.]+$/;
+
+/**
+ * Allowed origins
+ */
+const ALLOWED_ORIGINS = ['https://molily.github.io'];
 
 /**
  * Holds the users in memory.
@@ -46,6 +52,10 @@ const isEmailTaken = (email) => users.some((user) => user.email == email);
 const app = express();
 app.use(express.json());
 
+// Enable CORS
+app.use(cors({ origin: ALLOWED_ORIGINS }));
+
+// Enable API limiter
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100,
