@@ -98,29 +98,41 @@ describe('SignupFormComponent', () => {
     dispatchFakeEvent(element.nativeElement, 'blur');
   };
 
-  describe('success case', () => {
-    beforeEach(async () => {
-      await setup();
-    });
+  it('submits the form successfully', fakeAsync(async () => {
+    await setup();
 
-    it('submits the form successfully', fakeAsync(() => {
-      fillForm();
+    fillForm();
 
-      expect(findEl(fixture, 'submit').properties.disabled).toBe(true);
-      // Wait for async validators
-      tick(1000);
-      fixture.detectChanges();
-      expect(findEl(fixture, 'submit').properties.disabled).toBe(false);
-      findEl(fixture, 'form').triggerEventHandler('submit', {});
-      fixture.detectChanges();
-      expectText(fixture, 'status', 'Sign-up successful!');
+    expect(findEl(fixture, 'submit').properties.disabled).toBe(true);
 
-      expect(signupService.isUsernameTaken).toHaveBeenCalledWith(username);
-      expect(signupService.isEmailTaken).toHaveBeenCalledWith(email);
-      expect(signupService.getPasswordStrength).toHaveBeenCalledWith(password);
-      expect(signupService.signup).toHaveBeenCalledWith(signupData);
-    }));
-  });
+    // Wait for async validators
+    tick(1000);
+    fixture.detectChanges();
+
+    expect(findEl(fixture, 'submit').properties.disabled).toBe(false);
+
+    findEl(fixture, 'form').triggerEventHandler('submit', {});
+    fixture.detectChanges();
+
+    expectText(fixture, 'status', 'Sign-up successful!');
+
+    expect(signupService.isUsernameTaken).toHaveBeenCalledWith(username);
+    expect(signupService.isEmailTaken).toHaveBeenCalledWith(email);
+    expect(signupService.getPasswordStrength).toHaveBeenCalledWith(password);
+    expect(signupService.signup).toHaveBeenCalledWith(signupData);
+  }));
+
+  it('does not submit an invalid form', fakeAsync(async () => {
+    await setup();
+
+    findEl(fixture, 'form').triggerEventHandler('submit', {});
+    fixture.detectChanges();
+
+    expect(signupService.isUsernameTaken).not.toHaveBeenCalled();
+    expect(signupService.isEmailTaken).not.toHaveBeenCalled();
+    expect(signupService.getPasswordStrength).not.toHaveBeenCalled();
+    expect(signupService.signup).not.toHaveBeenCalled();
+  }));
 
   it('fails if the username is taken', fakeAsync(async () => {
     await setup({
@@ -133,7 +145,10 @@ describe('SignupFormComponent', () => {
     // Wait for async validators
     tick(1000);
     fixture.detectChanges();
+
     expect(findEl(fixture, 'submit').properties.disabled).toBe(true);
+
+    findEl(fixture, 'form').triggerEventHandler('submit', {});
 
     expect(signupService.isUsernameTaken).toHaveBeenCalledWith(username);
     expect(signupService.isEmailTaken).toHaveBeenCalledWith(email);
@@ -152,7 +167,10 @@ describe('SignupFormComponent', () => {
     // Wait for async validators
     tick(1000);
     fixture.detectChanges();
+
     expect(findEl(fixture, 'submit').properties.disabled).toBe(true);
+
+    findEl(fixture, 'form').triggerEventHandler('submit', {});
 
     expect(signupService.isUsernameTaken).toHaveBeenCalledWith(username);
     expect(signupService.isEmailTaken).toHaveBeenCalledWith(email);
@@ -173,7 +191,10 @@ describe('SignupFormComponent', () => {
     // Wait for async validators
     tick(1000);
     fixture.detectChanges();
+
     expect(findEl(fixture, 'submit').properties.disabled).toBe(true);
+
+    findEl(fixture, 'form').triggerEventHandler('submit', {});
 
     expect(signupService.isUsernameTaken).toHaveBeenCalledWith(username);
     expect(signupService.getPasswordStrength).toHaveBeenCalledWith(password);
@@ -241,7 +262,6 @@ describe('SignupFormComponent', () => {
 
     // Change plan to non-profit
     setCheckboxValue(fixture, 'plan-non-profit', true);
-
     fixture.detectChanges();
 
     expect(addressLine1El.attributes['aria-required']).toBe('true');
@@ -277,12 +297,16 @@ describe('SignupFormComponent', () => {
     fillForm();
 
     expect(findEl(fixture, 'submit').properties.disabled).toBe(true);
+
     // Wait for async validators
     tick(1000);
     fixture.detectChanges();
+
     expect(findEl(fixture, 'submit').properties.disabled).toBe(false);
+
     findEl(fixture, 'form').triggerEventHandler('submit', {});
     fixture.detectChanges();
+
     expectText(fixture, 'status', 'Sign-up error');
 
     expect(signupService.isUsernameTaken).toHaveBeenCalledWith(username);
