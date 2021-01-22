@@ -1,7 +1,7 @@
 import { SignupData } from '../services/signup.service';
 
 export const username = 'quickBrownFox';
-export const password = 'dog lazy the over jumps fix brown quick the';
+export const password = 'dog lazy the over jumps fox brown quick the';
 export const email = 'quick.brown.fox@example.org';
 export const name = 'Mr. Fox';
 export const addressLine1 = '';

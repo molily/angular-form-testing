@@ -12,6 +12,11 @@ import { PasswordStrength, Plan, SignupService } from 'src/app/services/signup.s
 
 const { email, maxLength, pattern, required, requiredTrue } = Validators;
 
+/**
+ * Wait for this time before sending async validation requests to the server.
+ */
+const ASYNC_VALIDATION_DELAY = 1000;
+
 @Component({
   selector: 'app-signup-form',
   templateUrl: './signup-form.component.html',
@@ -24,7 +29,7 @@ export class SignupFormComponent {
 
   public passwordSubject = new Subject<string>();
   public passwordStrengthFromServer$ = this.passwordSubject.pipe(
-    debounceTime(1000),
+    debounceTime(ASYNC_VALIDATION_DELAY),
     switchMap((password) =>
       this.signupService.getPasswordStrength(password).pipe(catchError(() => EMPTY)),
     ),
@@ -79,14 +84,14 @@ export class SignupFormComponent {
   }
 
   public validateUsername(username: string): Observable<ValidationErrors> {
-    return timer(1000).pipe(
+    return timer(ASYNC_VALIDATION_DELAY).pipe(
       switchMap(() => this.signupService.isUsernameTaken(username)),
       map((usernameTaken) => (usernameTaken ? { taken: true } : {})),
     );
   }
 
   public validateEmail(username: string): Observable<ValidationErrors> {
-    return timer(1000).pipe(
+    return timer(ASYNC_VALIDATION_DELAY).pipe(
       switchMap(() => this.signupService.isEmailTaken(username)),
       map((emailTaken) => (emailTaken ? { taken: true } : {})),
     );

@@ -102,6 +102,7 @@ describe('SignupFormComponent', () => {
     await setup();
 
     fillForm();
+    fixture.detectChanges();
 
     expect(findEl(fixture, 'submit').properties.disabled).toBe(true);
 
@@ -126,13 +127,54 @@ describe('SignupFormComponent', () => {
     await setup();
 
     findEl(fixture, 'form').triggerEventHandler('submit', {});
-    fixture.detectChanges();
+
+    // Wait for async validators
+    tick(1000);
 
     expect(signupService.isUsernameTaken).not.toHaveBeenCalled();
     expect(signupService.isEmailTaken).not.toHaveBeenCalled();
     expect(signupService.getPasswordStrength).not.toHaveBeenCalled();
     expect(signupService.signup).not.toHaveBeenCalled();
   }));
+
+  it('marks fields as required', async () => {
+    await setup();
+
+    // Mark required fields as touched
+    requiredFields.forEach((testId) => {
+      markFieldAsTouched(findEl(fixture, testId));
+    });
+
+    fixture.detectChanges();
+
+    requiredFields.forEach((testId) => {
+      const el = findEl(fixture, testId);
+
+      // Check aria-required attribute
+      expect(el.attributes['aria-required']).toBe(
+        'true',
+        `${testId} must be marked as aria-required`,
+      );
+
+      // Check aria-errormessage attribute
+      const errormessageId = el.attributes['aria-errormessage'];
+      if (!errormessageId) {
+        throw new Error(`Error message id for ${testId} not present`);
+      }
+      // Check element with error message
+      const errormessageEl = document.getElementById(errormessageId);
+      if (!errormessageEl) {
+        throw new Error(`Error message element for ${testId} not found`);
+      }
+      if (errormessageId === 'tos-errors') {
+        expect(errormessageEl.textContent).toContain(
+          'Please accept the Terms and Services',
+        );
+      } else {
+        expect(errormessageEl.textContent).toContain('must be given');
+      }
+    });
+  });
 
   it('fails if the username is taken', fakeAsync(async () => {
     await setup({
@@ -180,10 +222,8 @@ describe('SignupFormComponent', () => {
 
   it('fails if the password is too weak', fakeAsync(async () => {
     await setup({
-      isUsernameTaken: of(false),
       // Let the API return that the password is weak
       getPasswordStrength: of(weakPassword),
-      signup: of({ success: true }),
     });
 
     fillForm();
@@ -200,48 +240,6 @@ describe('SignupFormComponent', () => {
     expect(signupService.getPasswordStrength).toHaveBeenCalledWith(password);
     expect(signupService.signup).not.toHaveBeenCalled();
   }));
-
-  it('marks fields as required', async () => {
-    await setup();
-
-    // Mark required fields as touched
-    requiredFields.forEach((testId) => {
-      markFieldAsTouched(findEl(fixture, testId));
-    });
-
-    fixture.detectChanges();
-
-    requiredFields.forEach((testId) => {
-      const el = findEl(fixture, testId);
-
-      // Check aria-required attribute
-      expect(el.attributes['aria-required']).toBe(
-        'true',
-        `${testId} must be marked as aria-required`,
-      );
-
-      // Check ng-invalid class
-      expect(el.classes['ng-invalid']).toBe(true, `${testId} must be required`);
-
-      // Check aria-errormessage attribute
-      const errormessageId = el.attributes['aria-errormessage'];
-      if (!errormessageId) {
-        throw new Error(`Error message id for ${testId} not present`);
-      }
-      // Check element with error message
-      const errormessageEl = document.getElementById(errormessageId);
-      if (!errormessageEl) {
-        throw new Error(`Error message element for ${testId} not found`);
-      }
-      if (errormessageId === 'tos-errors') {
-        expect(errormessageEl.textContent).toContain(
-          'Please accept the Terms and Services',
-        );
-      } else {
-        expect(errormessageEl.textContent).toContain('must be given');
-      }
-    });
-  });
 
   it('requires address line 1 for business and non-profit plans', async () => {
     await setup();
@@ -288,8 +286,6 @@ describe('SignupFormComponent', () => {
 
   it('handles signup failure', fakeAsync(async () => {
     await setup({
-      isUsernameTaken: of(false),
-      getPasswordStrength: of(strongPassword),
       // Let the API report a failure
       signup: throwError(new Error('Validation failed')),
     });
