@@ -237,6 +237,7 @@ describe('SignupFormComponent', () => {
     findEl(fixture, 'form').triggerEventHandler('submit', {});
 
     expect(signupService.isUsernameTaken).toHaveBeenCalledWith(username);
+    expect(signupService.isEmailTaken).toHaveBeenCalledWith(email);
     expect(signupService.getPasswordStrength).toHaveBeenCalledWith(password);
     expect(signupService.signup).not.toHaveBeenCalled();
   }));
