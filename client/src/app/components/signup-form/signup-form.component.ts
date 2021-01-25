@@ -27,8 +27,8 @@ export class SignupFormComponent {
   public BUSINESS: Plan = 'business';
   public NON_PROFIT: Plan = 'non-profit';
 
-  public passwordSubject = new Subject<string>();
-  public passwordStrengthFromServer$ = this.passwordSubject.pipe(
+  private passwordSubject = new Subject<string>();
+  private passwordStrengthFromServer$ = this.passwordSubject.pipe(
     debounceTime(ASYNC_VALIDATION_DELAY),
     switchMap((password) =>
       this.signupService.getPasswordStrength(password).pipe(catchError(() => EMPTY)),
@@ -38,6 +38,7 @@ export class SignupFormComponent {
     this.passwordSubject.pipe(mapTo(null)),
     this.passwordStrengthFromServer$,
   );
+
   public showPassword = false;
 
   public form = this.formBuilder.group({
@@ -83,25 +84,25 @@ export class SignupFormComponent {
     });
   }
 
-  public validateUsername(username: string): Observable<ValidationErrors> {
+  public getPasswordStrength(): void {
+    this.passwordSubject.next(this.form.controls.password.value);
+  }
+
+  private validateUsername(username: string): Observable<ValidationErrors> {
     return timer(ASYNC_VALIDATION_DELAY).pipe(
       switchMap(() => this.signupService.isUsernameTaken(username)),
       map((usernameTaken) => (usernameTaken ? { taken: true } : {})),
     );
   }
 
-  public validateEmail(username: string): Observable<ValidationErrors> {
+  private validateEmail(username: string): Observable<ValidationErrors> {
     return timer(ASYNC_VALIDATION_DELAY).pipe(
       switchMap(() => this.signupService.isEmailTaken(username)),
       map((emailTaken) => (emailTaken ? { taken: true } : {})),
     );
   }
 
-  public getPasswordStrength(): void {
-    this.passwordSubject.next(this.form.controls.password.value);
-  }
-
-  public validatePassword(): Observable<ValidationErrors> {
+  private validatePassword(): Observable<ValidationErrors> {
     return this.passwordStrength$.pipe(
       first((passwordStrength) => passwordStrength !== null),
       map((passwordStrength) =>
