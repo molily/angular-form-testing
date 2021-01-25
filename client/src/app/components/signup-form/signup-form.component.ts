@@ -45,7 +45,7 @@ export class SignupFormComponent {
     plan: ['personal', required],
     username: [
       null,
-      [required, maxLength(50), pattern('[a-zA-Z0-9.]+')],
+      [required, pattern('[a-zA-Z0-9.]+'), maxLength(50)],
       (control: AbstractControl) => this.validateUsername(control.value),
     ],
     email: [
