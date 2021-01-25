@@ -267,7 +267,7 @@
           <input
             type="text"
             formControlName="addressLine1"
-            [attr.aria-required]="form.controls.plan.value !== PERSONAL"
+            [attr.aria-required]="form.controls.plan.value !== PERSONAL ? 'true' : null"
             appErrorMessage="addressLine1-errors"
             autocomplete="address-line1"
             data-testid="addressLine1"

@@ -10,7 +10,7 @@ import {
   dispatchFakeEvent,
   expectText,
   findEl,
-  setCheckboxValue,
+  checkField,
   setFieldValue,
 } from 'src/app/spec-helpers/element.spec-helper';
 import {
@@ -91,7 +91,7 @@ describe('SignupFormComponent', () => {
     setFieldValue(fixture, 'postcode', postcode);
     setFieldValue(fixture, 'region', region);
     setFieldValue(fixture, 'country', country);
-    setCheckboxValue(fixture, 'tos', true);
+    checkField(fixture, 'tos', true);
   };
 
   const markFieldAsTouched = (element: DebugElement) => {
@@ -126,15 +126,36 @@ describe('SignupFormComponent', () => {
   it('does not submit an invalid form', fakeAsync(async () => {
     await setup();
 
-    findEl(fixture, 'form').triggerEventHandler('submit', {});
-
     // Wait for async validators
     tick(1000);
+
+    findEl(fixture, 'form').triggerEventHandler('submit', {});
 
     expect(signupService.isUsernameTaken).not.toHaveBeenCalled();
     expect(signupService.isEmailTaken).not.toHaveBeenCalled();
     expect(signupService.getPasswordStrength).not.toHaveBeenCalled();
     expect(signupService.signup).not.toHaveBeenCalled();
+  }));
+
+  it('handles signup failure', fakeAsync(async () => {
+    await setup({
+      // Let the API report a failure
+      signup: throwError(new Error('Validation failed')),
+    });
+
+    fillForm();
+
+    // Wait for async validators
+    tick(1000);
+
+    findEl(fixture, 'form').triggerEventHandler('submit', {});
+    fixture.detectChanges();
+
+    expectText(fixture, 'status', 'Sign-up error');
+
+    expect(signupService.isUsernameTaken).toHaveBeenCalledWith(username);
+    expect(signupService.getPasswordStrength).toHaveBeenCalledWith(password);
+    expect(signupService.signup).toHaveBeenCalledWith(signupData);
   }));
 
   it('marks fields as required', async () => {
@@ -248,26 +269,24 @@ describe('SignupFormComponent', () => {
     // Initial state (personal plan)
     const addressLine1El = findEl(fixture, 'addressLine1');
     expect('ng-invalid' in addressLine1El.classes).toBe(false);
-    expect(addressLine1El.attributes['aria-required']).toBe('false');
+    expect('aria-required' in addressLine1El.attributes).toBe(false);
 
     // Change plan to business
-    setCheckboxValue(fixture, 'plan-business', true);
-
-    markFieldAsTouched(addressLine1El);
+    checkField(fixture, 'plan-business', true);
     fixture.detectChanges();
 
     expect(addressLine1El.attributes['aria-required']).toBe('true');
     expect(addressLine1El.classes['ng-invalid']).toBe(true);
 
     // Change plan to non-profit
-    setCheckboxValue(fixture, 'plan-non-profit', true);
+    checkField(fixture, 'plan-non-profit', true);
     fixture.detectChanges();
 
     expect(addressLine1El.attributes['aria-required']).toBe('true');
     expect(addressLine1El.classes['ng-invalid']).toBe(true);
   });
 
-  it('toggle the password display', async () => {
+  it('toggles the password display', async () => {
     await setup();
 
     setFieldValue(fixture, 'password', 'top secret');
@@ -284,30 +303,4 @@ describe('SignupFormComponent', () => {
 
     expect(passwordEl.attributes.type).toBe('password');
   });
-
-  it('handles signup failure', fakeAsync(async () => {
-    await setup({
-      // Let the API report a failure
-      signup: throwError(new Error('Validation failed')),
-    });
-
-    fillForm();
-
-    expect(findEl(fixture, 'submit').properties.disabled).toBe(true);
-
-    // Wait for async validators
-    tick(1000);
-    fixture.detectChanges();
-
-    expect(findEl(fixture, 'submit').properties.disabled).toBe(false);
-
-    findEl(fixture, 'form').triggerEventHandler('submit', {});
-    fixture.detectChanges();
-
-    expectText(fixture, 'status', 'Sign-up error');
-
-    expect(signupService.isUsernameTaken).toHaveBeenCalledWith(username);
-    expect(signupService.getPasswordStrength).toHaveBeenCalledWith(password);
-    expect(signupService.signup).toHaveBeenCalledWith(signupData);
-  }));
 });
