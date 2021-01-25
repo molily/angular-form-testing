@@ -165,7 +165,6 @@ describe('SignupFormComponent', () => {
     requiredFields.forEach((testId) => {
       markFieldAsTouched(findEl(fixture, testId));
     });
-
     fixture.detectChanges();
 
     requiredFields.forEach((testId) => {
