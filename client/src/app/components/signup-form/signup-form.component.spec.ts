@@ -1,4 +1,3 @@
-import { NO_ERRORS_SCHEMA } from '@angular/compiler';
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
