@@ -235,3 +235,20 @@ button[type='submit'] {
 .form-submit-error {
   background-color: blanchedalmond;
 }
+
+/*
+Hide and show content accessibly. The content is visually hidden,
+but assistive technologies like screen readers still read it.
+http://snook.ca/archives/html_and_css/hiding-content-for-accessibility
+*/
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  border: 0;
+  white-space: nowrap;
+}

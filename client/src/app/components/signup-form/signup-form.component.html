@@ -77,7 +77,7 @@
         <label>
           <span class="label-text">
             Username
-            <span class="necessity-required">required</span>
+            <span class="necessity-required" aria-hidden="true">required</span>
           </span>
           <input
             type="text"
@@ -121,7 +121,7 @@
           <label>
             <span class="label-text">
               Email
-              <span class="necessity-required">required</span>
+              <span class="necessity-required" aria-hidden="true">required</span>
             </span>
             <input
               type="email"
@@ -160,7 +160,7 @@
         <label>
           <span class="label-text">
             Password
-            <span class="necessity-required">required</span>
+            <span class="necessity-required" aria-hidden="true">required</span>
           </span>
           <input
             [type]="showPassword ? 'text' : 'password'"
@@ -186,6 +186,10 @@
             >
               {{ showPassword ? '🔒 Hide password' : '👁️ Show password' }}
             </button>
+            <span class="visually-hidden" aria-live="polite">
+              Your password is
+              {{ showPassword ? 'shown' : 'hidden' }}
+            </span>
           </p>
           <div
             *ngIf="passwordStrength$ | async as passwordStrength"
@@ -228,7 +232,7 @@
         <label>
           <span class="label-text">
             Full name
-            <span class="necessity-required">required</span>
+            <span class="necessity-required" aria-hidden="true">required</span>
           </span>
           <input
             type="text"
@@ -257,10 +261,10 @@
             <ng-container *ngIf="plan.value === PERSONAL"> Address line 1 </ng-container>
             <ng-container *ngIf="plan.value === BUSINESS"> Company </ng-container>
             <ng-container *ngIf="plan.value === NON_PROFIT"> Organization </ng-container>
-            <span *ngIf="plan.value !== PERSONAL" class="necessity-required">
+            <span *ngIf="plan.value !== PERSONAL" class="necessity-required" aria-hidden="true">
               required
             </span>
-            <span *ngIf="plan.value === PERSONAL" class="necessity-optional">
+            <span *ngIf="plan.value === PERSONAL" class="necessity-optional" aria-hidden="true">
               optional
             </span>
           </span>
@@ -296,7 +300,7 @@
         <label>
           <span class="label-text">
             Street and house number
-            <span class="necessity-required">required</span>
+            <span class="necessity-required" aria-hidden="true">required</span>
           </span>
           <input
             type="text"
@@ -325,7 +329,7 @@
         <label>
           <span class="label-text">
             City
-            <span class="necessity-required">required</span>
+            <span class="necessity-required" aria-hidden="true">required</span>
           </span>
           <input
             type="text"
@@ -352,7 +356,7 @@
         <label>
           <span class="label-text">
             Postcode
-            <span class="necessity-required">required</span>
+            <span class="necessity-required" aria-hidden="true">required</span>
           </span>
           <input
             type="text"
@@ -379,7 +383,7 @@
         <label>
           <span class="label-text">
             State/Province/Region
-            <span class="necessity-optional">optional</span>
+            <span class="necessity-optional" aria-hidden="true">optional</span>
           </span>
           <input
             type="text"
@@ -398,7 +402,7 @@
         <label>
           <span class="label-text">
             Country
-            <span class="necessity-required">required</span>
+            <span class="necessity-required" aria-hidden="true">required</span>
           </span>
           <select
             formControlName="country"
@@ -454,7 +458,7 @@
               href="https://www.nytimes.com/interactive/2019/opinion/internet-privacy-project.html"
               >Privacy Policy</a
             >
-            <span class="necessity-required"> (required)</span>
+            <span class="necessity-required" aria-hidden="true"> (required)</span>
           </span>
         </span>
       </label>
