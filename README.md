@@ -1,7 +1,7 @@
 # Angular Form testing
 
 📖 This example is part of the **[free online book: Testing Angular – A Guide to Robust Angular Applications
-](https://molily.de/testing-angular/)**. 📖
+](https://testing-angular.com/)**. 📖
 
 This is an example for testing complex Angular forms.
 
