@@ -82,17 +82,18 @@ button[type='submit'] {
 }
 
 .checkbox-and-label-text {
-  position: relative;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
 }
 
 input[type='checkbox'] {
   margin: 0 1rem;
+  vertical-align: middle;
 }
 
 .checkbox-label-text {
   display: inline;
+  padding: 0;
   font-weight: normal;
 }
 
