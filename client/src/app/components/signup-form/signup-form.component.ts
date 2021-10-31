@@ -10,12 +10,7 @@ import {
   takeWhile,
   tap,
 } from 'rxjs/operators';
-import {
-  PasswordStrength,
-  Plan,
-  SignupData,
-  SignupService,
-} from 'src/app/services/signup.service';
+import { PasswordStrength, Plan, SignupService } from 'src/app/services/signup.service';
 
 /**
  * Wait for this duration before sending async validation requests to the server.
@@ -50,23 +45,6 @@ export class SignupFormComponent {
 
   public showPassword = false;
 
-  public model: SignupData = {
-    plan: this.PERSONAL,
-    username: '',
-    email: '',
-    password: '',
-    address: {
-      name: '',
-      addressLine1: '',
-      addressLine2: '',
-      city: '',
-      postcode: '',
-      region: '',
-      country: '',
-    },
-    tos: false,
-  };
-
   public passwordStrength?: PasswordStrength;
 
   public submitProgress: 'idle' | 'success' | 'error' = 'idle';
@@ -74,26 +52,33 @@ export class SignupFormComponent {
   constructor(private signupService: SignupService) {}
 
   public getPasswordStrength(): void {
-    this.passwordSubject.next(this.model.password);
+    const password = this.form?.controls.password.value;
+    if (password) {
+      this.passwordSubject.next(password);
+    }
   }
 
-  public validateUsername = (control: AbstractControl): Observable<ValidationErrors | null> => {
+  public validateUsername = (
+    control: AbstractControl,
+  ): Observable<ValidationErrors | null> => {
     const username = control.value;
     return timer(ASYNC_VALIDATION_DELAY).pipe(
       switchMap(() => this.signupService.isUsernameTaken(username)),
       map((usernameTaken) => (usernameTaken ? { taken: true } : {})),
     );
-  }
+  };
 
-  public validateEmail = (control: AbstractControl): Observable<ValidationErrors | null> => {
+  public validateEmail = (
+    control: AbstractControl,
+  ): Observable<ValidationErrors | null> => {
     const email = control.value;
     return timer(ASYNC_VALIDATION_DELAY).pipe(
       switchMap(() => this.signupService.isEmailTaken(email)),
       map((emailTaken) => (emailTaken ? { taken: true } : {})),
     );
-  }
+  };
 
-  public validatePassword = (control: AbstractControl): Observable<ValidationErrors | null> => {
+  public validatePassword = (): Observable<ValidationErrors | null> => {
     return this.passwordStrength$.pipe(
       // Make sure the observable completes
       takeWhile((passwordStrength) => !passwordStrength, true),
@@ -101,13 +86,13 @@ export class SignupFormComponent {
         passwordStrength && passwordStrength.score < 3 ? { weak: true } : {},
       ),
     );
-  }
+  };
 
   public onSubmit(): void {
     if (!this.form?.valid) {
       return;
     }
-    this.signupService.signup(this.model).subscribe(
+    this.signupService.signup(this.form.value).subscribe(
       () => {
         this.submitProgress = 'success';
       },

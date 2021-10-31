@@ -12,7 +12,7 @@
             <input
               type="radio"
               name="plan"
-              [(ngModel)]="model.plan"
+              ngModel
               [value]="PERSONAL"
               required
               class="plan-radio"
@@ -31,7 +31,7 @@
             <input
               type="radio"
               name="plan"
-              [(ngModel)]="model.plan"
+              ngModel
               [value]="BUSINESS"
               required
               class="plan-radio"
@@ -47,10 +47,12 @@
         </li>
         <li class="plan">
           <label class="plan-label">
+            <!-- Set default value, expose NgModel as template variable -->
             <input
+              #plan="ngModel"
               type="radio"
-              [(ngModel)]="model.plan"
               name="plan"
+              [ngModel]="PERSONAL"
               [value]="NON_PROFIT"
               required
               class="plan-radio"
@@ -86,7 +88,7 @@
             #username="ngModel"
             type="text"
             name="username"
-            [(ngModel)]="model.username"
+            ngModel
             required
             pattern="[a-zA-Z0-9.]+"
             [maxlength]="50"
@@ -135,7 +137,7 @@
               #email="ngModel"
               type="email"
               name="email"
-              [(ngModel)]="model.email"
+              ngModel
               aria-describedby="email-description"
               required
               email
@@ -180,7 +182,7 @@
             [type]="showPassword ? 'text' : 'password'"
             name="password"
             id="password"
-            [(ngModel)]="model.password"
+            ngModel
             aria-describedby="password-description"
             required
             [appAsyncValidator]="validatePassword"
@@ -239,7 +241,7 @@
     </div>
   </fieldset>
 
-  <fieldset formGroupName="address">
+  <fieldset ngModelGroup="address">
     <legend>Address</legend>
 
     <!-- ******************************************* -->
@@ -254,7 +256,7 @@
             #name="ngModel"
             type="text"
             name="name"
-            [(ngModel)]="model.address.name"
+            ngModel
             required
             appErrorMessage="name-errors"
             autocomplete="name"
@@ -276,18 +278,18 @@
       <p class="field-and-label">
         <label>
           <span class="label-text">
-            <ng-container *ngIf="model.plan === PERSONAL"> Address line 1 </ng-container>
-            <ng-container *ngIf="model.plan === BUSINESS"> Company </ng-container>
-            <ng-container *ngIf="model.plan === NON_PROFIT"> Organization </ng-container>
+            <ng-container *ngIf="plan.value === PERSONAL"> Address line 1 </ng-container>
+            <ng-container *ngIf="plan.value === BUSINESS"> Company </ng-container>
+            <ng-container *ngIf="plan.value === NON_PROFIT"> Organization </ng-container>
             <span
-              *ngIf="model.plan !== PERSONAL"
+              *ngIf="plan.value === BUSINESS || plan.value === NON_PROFIT"
               class="necessity-required"
               aria-hidden="true"
             >
               required
             </span>
             <span
-              *ngIf="model.plan === PERSONAL"
+              *ngIf="plan.value === PERSONAL"
               class="necessity-optional"
               aria-hidden="true"
             >
@@ -298,8 +300,8 @@
             #addressLine1="ngModel"
             type="text"
             name="addressLine1"
-            [(ngModel)]="model.address.addressLine1"
-            [required]="model.plan !== PERSONAL"
+            ngModel
+            [required]="plan.value === BUSINESS || plan.value === NON_PROFIT"
             appErrorMessage="addressLine1-errors"
             autocomplete="address-line1"
             data-testid="addressLine1"
@@ -310,10 +312,10 @@
         <app-control-errors [control]="addressLine1.control" id="addressLine1-errors">
           <ng-template let-errors>
             <ng-container *ngIf="errors.required">
-              <ng-container *ngIf="form.controls.plan.value === BUSINESS">
+              <ng-container *ngIf="plan.value === BUSINESS">
                 Company must be given.
               </ng-container>
-              <ng-container *ngIf="form.controls.plan.value === NON_PROFIT">
+              <ng-container *ngIf="plan.value === NON_PROFIT">
                 Organization must be given.
               </ng-container>
             </ng-container>
@@ -334,7 +336,7 @@
             #addressLine2="ngModel"
             type="text"
             name="addressLine2"
-            [(ngModel)]="model.address.addressLine2"
+            ngModel
             required
             appErrorMessage="addressLine2-errors"
             autocomplete="address-line2"
@@ -365,7 +367,7 @@
             #city="ngModel"
             type="text"
             name="city"
-            [(ngModel)]="model.address.city"
+            ngModel
             required
             appErrorMessage="city-errors"
             autocomplete="shipping address-level2"
@@ -394,7 +396,7 @@
             #postcode="ngModel"
             type="text"
             name="postcode"
-            [(ngModel)]="model.address.postcode"
+            ngModel
             required
             appErrorMessage="postcode-errors"
             autocomplete="shipping postal-code"
@@ -422,7 +424,7 @@
           <input
             type="text"
             name="region"
-            [(ngModel)]="model.address.region"
+            ngModel
             aria-describedby="region-description"
             autocomplete="shipping address-level1"
             data-testid="region"
@@ -442,7 +444,7 @@
           <select
             #country="ngModel"
             name="country"
-            [(ngModel)]="model.address.country"
+            ngModel
             required
             appErrorMessage="country-errors"
             autocomplete="shipping country"
@@ -480,7 +482,7 @@
             #tos="ngModel"
             type="checkbox"
             name="tos"
-            [(ngModel)]="model.tos"
+            ngModel
             required
             appErrorMessage="tos-errors"
             data-testid="tos"
