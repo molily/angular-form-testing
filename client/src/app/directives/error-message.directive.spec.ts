@@ -7,6 +7,7 @@ import {
   findEl,
   setFieldElementValue,
 } from '../spec-helpers/element.spec-helper';
+import { AsyncValidatorDirective } from './async-validator.directive';
 import { ErrorMessageDirective } from './error-message.directive';
 
 describe('ErrorMessageDirective', () => {
@@ -17,7 +18,7 @@ describe('ErrorMessageDirective', () => {
   const setup = async (HostComponent: Type<any>) => {
     await TestBed.configureTestingModule({
       imports: [ReactiveFormsModule],
-      declarations: [ErrorMessageDirective, HostComponent],
+      declarations: [ErrorMessageDirective, AsyncValidatorDirective, HostComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(HostComponent);

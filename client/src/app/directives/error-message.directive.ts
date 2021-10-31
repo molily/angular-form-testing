@@ -1,7 +1,5 @@
 import { Directive, HostBinding, Input, OnInit, Optional } from '@angular/core';
-import { AbstractControl, ControlContainer } from '@angular/forms';
-
-import { findFormControl } from '../util/findFormControl';
+import { NgControl } from '@angular/forms';
 
 /**
  * Directive that sets the `aria-invalid` and `aria-errormessage` attributes
@@ -10,14 +8,13 @@ import { findFormControl } from '../util/findFormControl';
  * https://w3c.github.io/aria/#aria-invalid
  * https://w3c.github.io/aria/#aria-errormessage
  *
- * Expects that the element either has a `formControl` or `formControlName` input.
+ * Expects that the element has an NgControl binding.
  *
  * Expects the id of the element that contains the error messages.
  *
  * Usage examples:
  *
- *   <input [formControl]="usernameFormControl" appErrorMessage="username-errors">
- *   <input formControlName="username"  appErrorMessage="username-errors">
+ *   <input [(ngModel)]="username" appErrorMessage="username-errors">
  *   <div id="username-errors">…</div>
  */
 @Directive({
@@ -37,29 +34,25 @@ export class ErrorMessageDirective implements OnInit {
   @Input()
   public appErrorMessage?: string;
 
-  @Input()
-  public formControl?: AbstractControl;
-
-  @Input()
-  public formControlName?: string;
-
-  private control?: AbstractControl;
-
-  constructor(@Optional() private controlContainer?: ControlContainer) {}
+  constructor(
+    // Marked as optional but checked on runtime
+    @Optional()
+    private control?: NgControl
+  ) {}
 
   public ngOnInit(): void {
-    this.control = findFormControl(
-      this.formControl,
-      this.formControlName,
-      this.controlContainer,
-    );
+    if (!this.control) {
+      throw new Error('ErrorMessageDirective: no control found on element');
+    }
   }
 
   /**
-   * Whether link to the errors is established.
+   * Whether the link to the errors is established.
    */
   private isActive(): boolean {
     const { control } = this;
-    return control !== undefined && control.invalid && (control.touched || control.dirty);
+    return Boolean(
+      control !== undefined && control.invalid && (control.touched || control.dirty),
+    );
   }
 }

@@ -1,19 +1,24 @@
-import { Component } from '@angular/core';
-import {
-  AbstractControl,
-  FormBuilder,
-  FormGroup,
-  ValidationErrors,
-  Validators,
-} from '@angular/forms';
+import { Component, ViewChild } from '@angular/core';
+import { AbstractControl, NgForm, ValidationErrors } from '@angular/forms';
 import { EMPTY, merge, Observable, Subject, timer } from 'rxjs';
-import { catchError, debounceTime, first, map, mapTo, switchMap } from 'rxjs/operators';
-import { PasswordStrength, Plan, SignupService } from 'src/app/services/signup.service';
-
-const { email, maxLength, pattern, required, requiredTrue } = Validators;
+import {
+  catchError,
+  debounceTime,
+  map,
+  mapTo,
+  switchMap,
+  takeWhile,
+  tap,
+} from 'rxjs/operators';
+import {
+  PasswordStrength,
+  Plan,
+  SignupData,
+  SignupService,
+} from 'src/app/services/signup.service';
 
 /**
- * Wait for this time before sending async validation requests to the server.
+ * Wait for this duration before sending async validation requests to the server.
  */
 const ASYNC_VALIDATION_DELAY = 1000;
 
@@ -23,6 +28,9 @@ const ASYNC_VALIDATION_DELAY = 1000;
   styleUrls: ['./signup-form.component.scss'],
 })
 export class SignupFormComponent {
+  @ViewChild(NgForm)
+  public form?: NgForm;
+
   public PERSONAL: Plan = 'personal';
   public BUSINESS: Plan = 'business';
   public NON_PROFIT: Plan = 'non-profit';
@@ -30,6 +38,7 @@ export class SignupFormComponent {
   private passwordSubject = new Subject<string>();
   private passwordStrengthFromServer$ = this.passwordSubject.pipe(
     debounceTime(ASYNC_VALIDATION_DELAY),
+    tap(() => {}),
     switchMap((password) =>
       this.signupService.getPasswordStrength(password).pipe(catchError(() => EMPTY)),
     ),
@@ -41,70 +50,53 @@ export class SignupFormComponent {
 
   public showPassword = false;
 
-  public form = this.formBuilder.group({
-    plan: ['personal', required],
-    username: [
-      null,
-      [required, pattern('[a-zA-Z0-9.]+'), maxLength(50)],
-      (control: AbstractControl) => this.validateUsername(control.value),
-    ],
-    email: [
-      null,
-      [required, email, maxLength(100)],
-      (control: AbstractControl) => this.validateEmail(control.value),
-    ],
-    password: [null, required, () => this.validatePassword()],
-    tos: [null, requiredTrue],
-    address: this.formBuilder.group({
-      name: [null, required],
-      addressLine1: [null],
-      addressLine2: [null, required],
-      city: [null, required],
-      postcode: [null, required],
-      region: [null],
-      country: [null, required],
-    }),
-  });
-
-  public plan = this.form.controls.plan;
-  public addressLine1 = (this.form.controls.address as FormGroup).controls.addressLine1;
+  public model: SignupData = {
+    plan: this.PERSONAL,
+    username: '',
+    email: '',
+    password: '',
+    address: {
+      name: '',
+      addressLine1: '',
+      addressLine2: '',
+      city: '',
+      postcode: '',
+      region: '',
+      country: '',
+    },
+    tos: false,
+  };
 
   public passwordStrength?: PasswordStrength;
 
   public submitProgress: 'idle' | 'success' | 'error' = 'idle';
 
-  constructor(private signupService: SignupService, private formBuilder: FormBuilder) {
-    this.plan.valueChanges.subscribe((plan: Plan) => {
-      if (plan !== this.PERSONAL) {
-        this.addressLine1.setValidators(required);
-      } else {
-        this.addressLine1.setValidators(null);
-      }
-      this.addressLine1.updateValueAndValidity();
-    });
-  }
+  constructor(private signupService: SignupService) {}
 
   public getPasswordStrength(): void {
-    this.passwordSubject.next(this.form.controls.password.value);
+    this.passwordSubject.next(this.model.password);
   }
 
-  private validateUsername(username: string): Observable<ValidationErrors> {
+  public validateUsername = (control: AbstractControl): Observable<ValidationErrors | null> => {
+    const username = control.value;
     return timer(ASYNC_VALIDATION_DELAY).pipe(
       switchMap(() => this.signupService.isUsernameTaken(username)),
       map((usernameTaken) => (usernameTaken ? { taken: true } : {})),
     );
   }
 
-  private validateEmail(username: string): Observable<ValidationErrors> {
+  public validateEmail = (control: AbstractControl): Observable<ValidationErrors | null> => {
+    const email = control.value;
     return timer(ASYNC_VALIDATION_DELAY).pipe(
-      switchMap(() => this.signupService.isEmailTaken(username)),
+      switchMap(() => this.signupService.isEmailTaken(email)),
       map((emailTaken) => (emailTaken ? { taken: true } : {})),
     );
   }
 
-  private validatePassword(): Observable<ValidationErrors> {
+  public validatePassword = (control: AbstractControl): Observable<ValidationErrors | null> => {
     return this.passwordStrength$.pipe(
-      first((passwordStrength) => passwordStrength !== null),
+      // Make sure the observable completes
+      takeWhile((passwordStrength) => !passwordStrength, true),
       map((passwordStrength) =>
         passwordStrength && passwordStrength.score < 3 ? { weak: true } : {},
       ),
@@ -112,10 +104,10 @@ export class SignupFormComponent {
   }
 
   public onSubmit(): void {
-    if (!this.form.valid) {
+    if (!this.form?.valid) {
       return;
     }
-    this.signupService.signup(this.form.value).subscribe(
+    this.signupService.signup(this.model).subscribe(
       () => {
         this.submitProgress = 'success';
       },

@@ -1,6 +1,6 @@
 <h1>Sign-up</h1>
 
-<form [formGroup]="form" (ngSubmit)="onSubmit()" data-testid="form">
+<form #form="ngForm" (ngSubmit)="onSubmit()" data-testid="form">
   <fieldset>
     <legend>Choose your plan</legend>
 
@@ -11,9 +11,10 @@
           <label class="plan-label">
             <input
               type="radio"
-              formControlName="plan"
               name="plan"
+              [(ngModel)]="model.plan"
               [value]="PERSONAL"
+              required
               class="plan-radio"
               data-testid="plan-personal"
             />
@@ -29,9 +30,10 @@
           <label class="plan-label">
             <input
               type="radio"
-              formControlName="plan"
               name="plan"
+              [(ngModel)]="model.plan"
               [value]="BUSINESS"
+              required
               class="plan-radio"
               data-testid="plan-business"
             />
@@ -47,9 +49,10 @@
           <label class="plan-label">
             <input
               type="radio"
-              formControlName="plan"
+              [(ngModel)]="model.plan"
               name="plan"
               [value]="NON_PROFIT"
+              required
               class="plan-radio"
               data-testid="plan-non-profit"
             />
@@ -80,10 +83,15 @@
             <span class="necessity-required" aria-hidden="true">required</span>
           </span>
           <input
+            #username="ngModel"
             type="text"
-            formControlName="username"
+            name="username"
+            [(ngModel)]="model.username"
+            required
+            pattern="[a-zA-Z0-9.]+"
+            [maxlength]="50"
+            [appAsyncValidator]="validateUsername"
             aria-describedby="username-description"
-            aria-required="true"
             appErrorMessage="username-errors"
             autocomplete="username"
             data-testid="username"
@@ -95,7 +103,7 @@
           User name may only contain letters (a-z), numbers (0-9) and periods (.).
           Example: beautiful.flower.2020
         </p>
-        <app-control-errors controlName="username" id="username-errors">
+        <app-control-errors [control]="username.control" id="username-errors">
           <ng-template let-errors>
             <ng-container *ngIf="errors.required">
               User name must be given.
@@ -124,10 +132,15 @@
               <span class="necessity-required" aria-hidden="true">required</span>
             </span>
             <input
+              #email="ngModel"
               type="email"
-              formControlName="email"
+              name="email"
+              [(ngModel)]="model.email"
               aria-describedby="email-description"
-              aria-required="true"
+              required
+              email
+              [maxlength]="100"
+              [appAsyncValidator]="validateEmail"
               appErrorMessage="email-errors"
               autocomplete="email"
               data-testid="email"
@@ -139,7 +152,7 @@
         <p class="field-description" id="email-description">
           Example: brigitte.bryan@example.org
         </p>
-        <app-control-errors controlName="email" id="email-errors">
+        <app-control-errors [control]="email.control" id="email-errors">
           <ng-template let-errors>
             <ng-container *ngIf="errors.required"> Email must be given. </ng-container>
             <ng-container *ngIf="errors.email"> Not a valid email address. </ng-container>
@@ -163,11 +176,14 @@
             <span class="necessity-required" aria-hidden="true">required</span>
           </span>
           <input
+            #password="ngModel"
             [type]="showPassword ? 'text' : 'password'"
+            name="password"
             id="password"
-            formControlName="password"
+            [(ngModel)]="model.password"
             aria-describedby="password-description"
-            aria-required="true"
+            required
+            [appAsyncValidator]="validatePassword"
             appErrorMessage="password-errors"
             autocomplete="new-password"
             (input)="getPasswordStrength()"
@@ -213,7 +229,7 @@
             </p>
           </div>
         </div>
-        <app-control-errors controlName="password" id="password-errors">
+        <app-control-errors [control]="password.control" id="password-errors">
           <ng-template let-errors>
             <ng-container *ngIf="errors.required"> Password must be given. </ng-container>
             <ng-container *ngIf="errors.weak"> Password is too weak. </ng-container>
@@ -235,9 +251,11 @@
             <span class="necessity-required" aria-hidden="true">required</span>
           </span>
           <input
+            #name="ngModel"
             type="text"
-            formControlName="name"
-            aria-required="true"
+            name="name"
+            [(ngModel)]="model.address.name"
+            required
             appErrorMessage="name-errors"
             autocomplete="name"
             data-testid="name"
@@ -245,7 +263,7 @@
         </label>
       </p>
       <div class="field-info">
-        <app-control-errors controlName="name" id="name-errors">
+        <app-control-errors [control]="name.control" id="name-errors">
           <ng-template let-errors>
             <ng-container *ngIf="errors.required"> Name must be given. </ng-container>
           </ng-template>
@@ -258,20 +276,30 @@
       <p class="field-and-label">
         <label>
           <span class="label-text">
-            <ng-container *ngIf="plan.value === PERSONAL"> Address line 1 </ng-container>
-            <ng-container *ngIf="plan.value === BUSINESS"> Company </ng-container>
-            <ng-container *ngIf="plan.value === NON_PROFIT"> Organization </ng-container>
-            <span *ngIf="plan.value !== PERSONAL" class="necessity-required" aria-hidden="true">
+            <ng-container *ngIf="model.plan === PERSONAL"> Address line 1 </ng-container>
+            <ng-container *ngIf="model.plan === BUSINESS"> Company </ng-container>
+            <ng-container *ngIf="model.plan === NON_PROFIT"> Organization </ng-container>
+            <span
+              *ngIf="model.plan !== PERSONAL"
+              class="necessity-required"
+              aria-hidden="true"
+            >
               required
             </span>
-            <span *ngIf="plan.value === PERSONAL" class="necessity-optional" aria-hidden="true">
+            <span
+              *ngIf="model.plan === PERSONAL"
+              class="necessity-optional"
+              aria-hidden="true"
+            >
               optional
             </span>
           </span>
           <input
+            #addressLine1="ngModel"
             type="text"
-            formControlName="addressLine1"
-            [attr.aria-required]="form.controls.plan.value !== PERSONAL ? 'true' : null"
+            name="addressLine1"
+            [(ngModel)]="model.address.addressLine1"
+            [required]="model.plan !== PERSONAL"
             appErrorMessage="addressLine1-errors"
             autocomplete="address-line1"
             data-testid="addressLine1"
@@ -279,7 +307,7 @@
         </label>
       </p>
       <div class="field-info">
-        <app-control-errors controlName="addressLine1" id="addressLine1-errors">
+        <app-control-errors [control]="addressLine1.control" id="addressLine1-errors">
           <ng-template let-errors>
             <ng-container *ngIf="errors.required">
               <ng-container *ngIf="form.controls.plan.value === BUSINESS">
@@ -303,9 +331,11 @@
             <span class="necessity-required" aria-hidden="true">required</span>
           </span>
           <input
+            #addressLine2="ngModel"
             type="text"
-            formControlName="addressLine2"
-            aria-required="true"
+            name="addressLine2"
+            [(ngModel)]="model.address.addressLine2"
+            required
             appErrorMessage="addressLine2-errors"
             autocomplete="address-line2"
             data-testid="addressLine2"
@@ -313,7 +343,7 @@
         </label>
       </p>
       <div class="field-info">
-        <app-control-errors controlName="addressLine2" id="addressLine2-errors">
+        <app-control-errors [control]="addressLine2.control" id="addressLine2-errors">
           <ng-template let-errors>
             <ng-container *ngIf="errors.required">
               Street and house number must be given.
@@ -332,9 +362,11 @@
             <span class="necessity-required" aria-hidden="true">required</span>
           </span>
           <input
+            #city="ngModel"
             type="text"
-            formControlName="city"
-            aria-required="true"
+            name="city"
+            [(ngModel)]="model.address.city"
+            required
             appErrorMessage="city-errors"
             autocomplete="shipping address-level2"
             data-testid="city"
@@ -342,7 +374,7 @@
         </label>
       </p>
       <div class="field-info">
-        <app-control-errors controlName="city" id="city-errors">
+        <app-control-errors [control]="city.control" id="city-errors">
           <ng-template let-errors>
             <ng-container *ngIf="errors.required"> City must be given. </ng-container>
           </ng-template>
@@ -359,9 +391,11 @@
             <span class="necessity-required" aria-hidden="true">required</span>
           </span>
           <input
+            #postcode="ngModel"
             type="text"
-            formControlName="postcode"
-            aria-required="true"
+            name="postcode"
+            [(ngModel)]="model.address.postcode"
+            required
             appErrorMessage="postcode-errors"
             autocomplete="shipping postal-code"
             data-testid="postcode"
@@ -369,7 +403,7 @@
         </label>
       </p>
       <div class="field-info">
-        <app-control-errors controlName="postcode" id="postcode-errors">
+        <app-control-errors [control]="postcode.control" id="postcode-errors">
           <ng-template let-errors>
             <ng-container *ngIf="errors.required"> Postcode must be given. </ng-container>
           </ng-template>
@@ -387,7 +421,8 @@
           </span>
           <input
             type="text"
-            formControlName="region"
+            name="region"
+            [(ngModel)]="model.address.region"
             aria-describedby="region-description"
             autocomplete="shipping address-level1"
             data-testid="region"
@@ -405,8 +440,10 @@
             <span class="necessity-required" aria-hidden="true">required</span>
           </span>
           <select
-            formControlName="country"
-            aria-required="true"
+            #country="ngModel"
+            name="country"
+            [(ngModel)]="model.address.country"
+            required
             appErrorMessage="country-errors"
             autocomplete="shipping country"
             data-testid="country"
@@ -422,7 +459,7 @@
         </label>
       </p>
       <div class="field-info">
-        <app-control-errors controlName="country" id="country-errors">
+        <app-control-errors [control]="country.control" id="country-errors">
           <ng-template let-errors>
             <ng-container *ngIf="errors.required"> Country must be given. </ng-container>
           </ng-template>
@@ -440,9 +477,11 @@
       <label>
         <span class="checkbox-and-label-text">
           <input
+            #tos="ngModel"
             type="checkbox"
-            formControlName="tos"
-            aria-required="true"
+            name="tos"
+            [(ngModel)]="model.tos"
+            required
             appErrorMessage="tos-errors"
             data-testid="tos"
           />
@@ -463,7 +502,7 @@
         </span>
       </label>
     </p>
-    <app-control-errors controlName="tos" id="tos-errors">
+    <app-control-errors [control]="tos.control" id="tos-errors">
       <ng-template let-errors>
         <ng-container *ngIf="errors.required">
           Please accept the Terms and Services.

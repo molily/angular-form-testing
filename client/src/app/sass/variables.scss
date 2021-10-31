@@ -4,13 +4,13 @@ $field-border-light: #486684;
 $field-border-dark: #f0f0f0;
 
 $field-border-selected-light: #486684;
-$field-border-selected-dark: #fff;
+$field-border-selected-dark: $field-border-dark;
 
 $field-background-light: #f5f5fa;
 $field-background-dark: #2a2a2a;
 
-$field-background-selected-light: #f0f0ff;
-$field-background-selected-dark: #4a4a4a;
+$field-background-selected-light: #eaeaff;
+$field-background-selected-dark: #b0b0b0;
 
 $success-color-light: green;
 $success-color-dark: chartreuse;

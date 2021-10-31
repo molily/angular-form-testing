@@ -1,6 +1,6 @@
 import { Component, Type } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormControl, FormsModule, Validators } from '@angular/forms';
 import {
   dispatchFakeEvent,
   expectContent,
@@ -17,7 +17,7 @@ describe('ControlErrorComponent', () => {
 
   const setup = async (HostComponent: Type<any>) => {
     await TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule],
+      imports: [FormsModule],
       declarations: [ControlErrorsComponent, HostComponent],
     }).compileComponents();
 
@@ -30,8 +30,8 @@ describe('ControlErrorComponent', () => {
   describe('passing the control', () => {
     @Component({
       template: `
-        <input [formControl]="control" data-testid="input" />
-        <app-control-errors [control]="control">
+        <input ngModel #input="ngModel" required data-testid="input">
+        <app-control-errors [control]="input.control">
           <ng-template let-errors>
             <ng-container *ngIf="errors.required">required</ng-container>
           </ng-template>
@@ -46,7 +46,7 @@ describe('ControlErrorComponent', () => {
       await setup(HostComponent);
     });
 
-    describe('valid control', () => {
+    describe('valid', () => {
       it('renders nothing', () => {
         setFieldElementValue(input, 'something');
         fixture.detectChanges();
@@ -54,13 +54,13 @@ describe('ControlErrorComponent', () => {
       });
     });
 
-    describe('invalid, pristine, untouched control', () => {
+    describe('invalid, pristine, untouched', () => {
       it('renders nothing', () => {
         expectContent(fixture, '');
       });
     });
 
-    describe('invalid control, touched', () => {
+    describe('invalid, pristine, touched', () => {
       it('renders the template', () => {
         // Mark control as touched
         dispatchFakeEvent(input, 'blur');
@@ -70,67 +70,10 @@ describe('ControlErrorComponent', () => {
       });
     });
 
-    describe('invalid control, dirty', () => {
+    describe('invalid, dirty, touched, ', () => {
       it('renders the template', () => {
-        // Mark control as dirty
+        // Mark control as touched & dirty
         dispatchFakeEvent(input, 'input');
-        fixture.detectChanges();
-        expectContent(fixture, '❗ required');
-        expect(findEl(fixture, 'control-error').attributes.role).toBe('alert');
-      });
-    });
-  });
-
-  describe('passing the control name', () => {
-    @Component({
-      template: `
-        <form [formGroup]="form">
-          <input formControlName="control" data-testid="input" />
-          <app-control-errors controlName="control">
-            <ng-template let-errors>
-              <ng-container *ngIf="errors.required">required</ng-container>
-            </ng-template>
-          </app-control-errors>
-        </form>
-      `,
-    })
-    class HostComponent {
-      public control = new FormControl(null, Validators.required);
-      public form = new FormGroup({ control: this.control });
-    }
-
-    beforeEach(async () => {
-      await setup(HostComponent);
-    });
-
-    describe('valid control', () => {
-      it('renders nothing', () => {
-        setFieldElementValue(input, 'something');
-        fixture.detectChanges();
-        expectContent(fixture, '');
-      });
-    });
-
-    describe('invalid, pristine, untouched control', () => {
-      it('renders nothing', () => {
-        expectContent(fixture, '');
-      });
-    });
-
-    describe('invalid control, touched', () => {
-      it('renders the template', () => {
-        // Mark control as touched
-        input.dispatchEvent(new FocusEvent('blur'));
-        fixture.detectChanges();
-        expectContent(fixture, '❗ required');
-        expect(findEl(fixture, 'control-error').attributes.role).toBe('alert');
-      });
-    });
-
-    describe('invalid control, dirty', () => {
-      it('renders the template', () => {
-        // Mark control as dirty
-        input.dispatchEvent(new Event('input'));
         fixture.detectChanges();
         expectContent(fixture, '❗ required');
         expect(findEl(fixture, 'control-error').attributes.role).toBe('alert');
@@ -152,7 +95,7 @@ describe('ControlErrorComponent', () => {
 
     it('throws an error', async () => {
       await TestBed.configureTestingModule({
-        imports: [ReactiveFormsModule],
+        imports: [FormsModule],
         declarations: [ControlErrorsComponent, HostComponent],
       }).compileComponents();
 
@@ -167,8 +110,8 @@ describe('ControlErrorComponent', () => {
   describe('without template', () => {
     @Component({
       template: `
-        <input [formControl]="control" data-testid="input" />
-        <app-control-errors [control]="control"></app-control-errors>
+        <input ngModel #input="ngModel" required data-testid="input">
+        <app-control-errors [control]="input.control"></app-control-errors>
       `,
     })
     class HostComponent {
