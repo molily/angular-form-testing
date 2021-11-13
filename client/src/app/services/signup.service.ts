@@ -17,7 +17,6 @@ export interface SignupData {
   username: string;
   email: string;
   password: string;
-  tos: true;
   address: {
     name: string;
     addressLine1?: string;
@@ -27,6 +26,7 @@ export interface SignupData {
     region?: string;
     country: string;
   };
+  tos: boolean;
 }
 
 @Injectable({
