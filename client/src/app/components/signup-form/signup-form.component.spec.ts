@@ -1,15 +1,16 @@
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { of, throwError } from 'rxjs';
+import { AsyncValidatorDirective } from 'src/app/directives/async-validator.directive';
 import { ErrorMessageDirective } from 'src/app/directives/error-message.directive';
 import { PasswordStrength, SignupService } from 'src/app/services/signup.service';
 import {
+  checkField,
   click,
   dispatchFakeEvent,
   expectText,
   findEl,
-  checkField,
   setFieldValue,
 } from 'src/app/spec-helpers/element.spec-helper';
 import {
@@ -70,8 +71,13 @@ describe('SignupFormComponent', () => {
     });
 
     await TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule],
-      declarations: [SignupFormComponent, ControlErrorsComponent, ErrorMessageDirective],
+      imports: [FormsModule],
+      declarations: [
+        SignupFormComponent,
+        ControlErrorsComponent,
+        ErrorMessageDirective,
+        AsyncValidatorDirective,
+      ],
       providers: [{ provide: SignupService, useValue: signupService }],
     }).compileComponents();
 
@@ -169,10 +175,10 @@ describe('SignupFormComponent', () => {
     requiredFields.forEach((testId) => {
       const el = findEl(fixture, testId);
 
-      // Check aria-required attribute
-      expect(el.attributes['aria-required']).toBe(
-        'true',
-        `${testId} must be marked as aria-required`,
+      // Check required attribute
+      expect('required' in el.attributes).toBe(
+        true,
+        `${testId} must be marked as required`,
       );
 
       // Check aria-errormessage attribute
@@ -267,20 +273,20 @@ describe('SignupFormComponent', () => {
     // Initial state (personal plan)
     const addressLine1El = findEl(fixture, 'addressLine1');
     expect('ng-invalid' in addressLine1El.classes).toBe(false);
-    expect('aria-required' in addressLine1El.attributes).toBe(false);
+    expect('required' in addressLine1El.attributes).toBe(false);
 
     // Change plan to business
     checkField(fixture, 'plan-business', true);
     fixture.detectChanges();
 
-    expect(addressLine1El.attributes['aria-required']).toBe('true');
+    expect('required' in addressLine1El.attributes).toBe(true);
     expect(addressLine1El.classes['ng-invalid']).toBe(true);
 
     // Change plan to non-profit
     checkField(fixture, 'plan-non-profit', true);
     fixture.detectChanges();
 
-    expect(addressLine1El.attributes['aria-required']).toBe('true');
+    expect('required' in addressLine1El.attributes).toBe(true);
     expect(addressLine1El.classes['ng-invalid']).toBe(true);
   });
 

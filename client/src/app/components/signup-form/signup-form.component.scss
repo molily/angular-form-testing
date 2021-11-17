@@ -82,17 +82,18 @@ button[type='submit'] {
 }
 
 .checkbox-and-label-text {
-  position: relative;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
 }
 
 input[type='checkbox'] {
   margin: 0 1rem;
+  vertical-align: middle;
 }
 
 .checkbox-label-text {
   display: inline;
+  padding: 0;
   font-weight: normal;
 }
 
@@ -141,15 +142,19 @@ input[type='checkbox'] {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  border: 2px solid v.$field-border-light;
-  border-radius: 2px;
+  border: 3px solid v.$field-border-light;
+  border-radius: 3px;
   background-color: v.$field-background-light;
   padding: 1.5rem 1rem;
   height: 100%;
   transition-property: color, border-color, transform, background-color;
   transition-duration: 150ms;
   transition-timing-function: ease;
-  transform: scale(0.965);
+  transform: scale(0.94);
+
+  @media (prefers-reduced-motion) {
+    transition: none;
+  }
 
   @include m.dark-scheme {
     border-color: v.$field-border-dark;
@@ -165,7 +170,7 @@ input[type='checkbox'] {
   @include m.dark-scheme {
     border-color: v.$field-border-selected-dark;
     background-color: v.$field-background-selected-dark;
-    color: white;
+    color: black;
   }
 }
 

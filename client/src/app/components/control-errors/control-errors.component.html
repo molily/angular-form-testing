@@ -1,9 +1,5 @@
 <p
-  *ngIf="
-    internalControl &&
-    internalControl.invalid &&
-    (internalControl.touched || internalControl.dirty)
-  "
+  *ngIf="control && control.invalid && (control.touched || control.dirty)"
   class="error-text"
   role="alert"
   data-testid="control-error"
