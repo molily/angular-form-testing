@@ -1,6 +1,6 @@
 # Angular form testing: Server
 
-This is a simple HTTP service based on Node.js and Express that implements a minimal backend for the sign-up form testing.
+This is a simple HTTP service based on Node.js and Express. It implements a fake backend for the sign-up form testing. This service does nothing useful and just simulates input validation and signup. Do not use it in production.
 
 ## Setup
 
