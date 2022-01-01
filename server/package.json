@@ -16,7 +16,7 @@
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.17.1",
-    "express-rate-limit": "^5.2.3",
+    "express-rate-limit": "^6.0.3",
     "nodemon": "^2.0.6",
     "zxcvbn": "^4.4.2"
   }

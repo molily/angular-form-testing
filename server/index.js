@@ -64,6 +64,8 @@ app.use(cors({ origin: ALLOWED_ORIGINS }));
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100,
+  standardHeaders: false,
+	legacyHeaders: false,
 });
 app.use(apiLimiter);
 
