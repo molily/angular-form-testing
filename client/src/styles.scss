@@ -9,6 +9,10 @@
   box-sizing: border-box;
 }
 
+:root {
+  color-scheme: light dark;
+}
+
 body {
   margin: 1rem;
   padding: 0;
@@ -17,12 +21,12 @@ body {
     Arial, sans-serif;
   line-height: 1.2;
 
-  background-color: #fdfdfd;
-  color: black;
+  background-color: v.$background-color-light;
+  color: v.$text-color-light;
 
   @include m.dark-scheme {
-    background-color: #202020;
-    color: #fdfdfd;
+    background-color: v.$background-color-dark;
+    color: v.$text-color-dark;
   }
 }
 

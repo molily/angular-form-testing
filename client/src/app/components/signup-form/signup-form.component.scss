@@ -160,12 +160,13 @@ input[type='checkbox'] {
 .plan-radio:checked + .plan-card {
   transform: scale(1);
   border-color: v.$field-border-selected-light;
+  color: v.$field-text-selected-light;
   background-color: v.$field-background-selected-light;
 
   @include m.dark-scheme {
     border-color: v.$field-border-selected-dark;
+    color: v.$field-text-selected-dark;
     background-color: v.$field-background-selected-dark;
-    color: white;
   }
 }
 
