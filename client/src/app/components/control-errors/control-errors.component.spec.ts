@@ -1,6 +1,6 @@
 import { Component, Type } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import {
   dispatchFakeEvent,
   expectContent,
@@ -39,7 +39,7 @@ describe('ControlErrorComponent', () => {
       `,
     })
     class HostComponent {
-      public control = new FormControl(null, Validators.required);
+      public control = new UntypedFormControl(null, Validators.required);
     }
 
     beforeEach(async () => {
@@ -95,8 +95,8 @@ describe('ControlErrorComponent', () => {
       `,
     })
     class HostComponent {
-      public control = new FormControl(null, Validators.required);
-      public form = new FormGroup({ control: this.control });
+      public control = new UntypedFormControl(null, Validators.required);
+      public form = new UntypedFormGroup({ control: this.control });
     }
 
     beforeEach(async () => {
@@ -172,7 +172,7 @@ describe('ControlErrorComponent', () => {
       `,
     })
     class HostComponent {
-      public control = new FormControl(null, Validators.required);
+      public control = new UntypedFormControl(null, Validators.required);
     }
 
     beforeEach(async () => {

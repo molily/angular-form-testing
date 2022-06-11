@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import {
   AbstractControl,
-  FormBuilder,
-  FormGroup,
+  UntypedFormBuilder,
+  UntypedFormGroup,
   ValidationErrors,
   Validators,
 } from '@angular/forms';
@@ -67,13 +67,13 @@ export class SignupFormComponent {
   });
 
   public plan = this.form.controls.plan;
-  public addressLine1 = (this.form.controls.address as FormGroup).controls.addressLine1;
+  public addressLine1 = (this.form.controls.address as UntypedFormGroup).controls.addressLine1;
 
   public passwordStrength?: PasswordStrength;
 
   public submitProgress: 'idle' | 'success' | 'error' = 'idle';
 
-  constructor(private signupService: SignupService, private formBuilder: FormBuilder) {
+  constructor(private signupService: SignupService, private formBuilder: UntypedFormBuilder) {
     this.plan.valueChanges.subscribe((plan: Plan) => {
       if (plan !== this.PERSONAL) {
         this.addressLine1.setValidators(required);
