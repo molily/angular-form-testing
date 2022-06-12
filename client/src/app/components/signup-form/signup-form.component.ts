@@ -1,14 +1,30 @@
 import { Component } from '@angular/core';
 import {
   AbstractControl,
-  UntypedFormBuilder,
-  UntypedFormGroup,
-  ValidationErrors,
+  AsyncValidatorFn,
+  FormGroup,
+  NonNullableFormBuilder,
   Validators,
 } from '@angular/forms';
-import { EMPTY, merge, Observable, Subject, timer } from 'rxjs';
-import { catchError, debounceTime, first, map, mapTo, switchMap } from 'rxjs/operators';
-import { PasswordStrength, Plan, SignupService } from 'src/app/services/signup.service';
+
+import {
+  EMPTY,
+  merge,
+  Subject,
+  timer,
+} from 'rxjs';
+import {
+  catchError,
+  debounceTime,
+  first,
+  map,
+  switchMap,
+} from 'rxjs/operators';
+import {
+  PasswordStrength,
+  Plan,
+  SignupService,
+} from 'src/app/services/signup.service';
 
 const { email, maxLength, pattern, required, requiredTrue } = Validators;
 
@@ -35,46 +51,49 @@ export class SignupFormComponent {
     ),
   );
   public passwordStrength$ = merge(
-    this.passwordSubject.pipe(mapTo(null)),
+    this.passwordSubject.pipe(map(() => null)),
     this.passwordStrengthFromServer$,
   );
 
   public showPassword = false;
 
   public form = this.formBuilder.group({
-    plan: ['personal', required],
+    plan: this.formBuilder.control<Plan>('personal', required),
     username: [
-      null,
+      '',
       [required, pattern('[a-zA-Z0-9.]+'), maxLength(50)],
       (control: AbstractControl) => this.validateUsername(control.value),
     ],
     email: [
-      null,
+      '',
       [required, email, maxLength(100)],
       (control: AbstractControl) => this.validateEmail(control.value),
     ],
-    password: [null, required, () => this.validatePassword()],
-    tos: [null, requiredTrue],
+    password: ['', required, () => this.validatePassword()],
+    tos: [false, requiredTrue],
     address: this.formBuilder.group({
-      name: [null, required],
-      addressLine1: [null],
-      addressLine2: [null, required],
-      city: [null, required],
-      postcode: [null, required],
-      region: [null],
-      country: [null, required],
+      name: ['', required],
+      addressLine1: [''],
+      addressLine2: ['', required],
+      city: ['', required],
+      postcode: ['', required],
+      region: [''],
+      country: ['', required],
     }),
   });
 
   public plan = this.form.controls.plan;
-  public addressLine1 = (this.form.controls.address as UntypedFormGroup).controls.addressLine1;
+  public addressLine1 = (this.form.controls.address as FormGroup).controls.addressLine1;
 
   public passwordStrength?: PasswordStrength;
 
   public submitProgress: 'idle' | 'success' | 'error' = 'idle';
 
-  constructor(private signupService: SignupService, private formBuilder: UntypedFormBuilder) {
-    this.plan.valueChanges.subscribe((plan: Plan) => {
+  constructor(
+    private signupService: SignupService,
+    private formBuilder: NonNullableFormBuilder,
+  ) {
+    this.plan.valueChanges.subscribe((plan) => {
       if (plan !== this.PERSONAL) {
         this.addressLine1.setValidators(required);
       } else {
@@ -85,43 +104,44 @@ export class SignupFormComponent {
   }
 
   public getPasswordStrength(): void {
-    this.passwordSubject.next(this.form.controls.password.value);
+    const password = this.form.controls.password.value;
+    if (password !== null) {
+      this.passwordSubject.next(password);
+    }
   }
 
-  private validateUsername(username: string): Observable<ValidationErrors> {
+  private validateUsername(username: string): ReturnType<AsyncValidatorFn> {
     return timer(ASYNC_VALIDATION_DELAY).pipe(
       switchMap(() => this.signupService.isUsernameTaken(username)),
-      map((usernameTaken) => (usernameTaken ? { taken: true } : {})),
+      map((usernameTaken) => (usernameTaken ? { taken: true } : null)),
     );
   }
 
-  private validateEmail(username: string): Observable<ValidationErrors> {
+  private validateEmail(username: string): ReturnType<AsyncValidatorFn> {
     return timer(ASYNC_VALIDATION_DELAY).pipe(
       switchMap(() => this.signupService.isEmailTaken(username)),
-      map((emailTaken) => (emailTaken ? { taken: true } : {})),
+      map((emailTaken) => (emailTaken ? { taken: true } : null)),
     );
   }
 
-  private validatePassword(): Observable<ValidationErrors> {
+  private validatePassword(): ReturnType<AsyncValidatorFn> {
     return this.passwordStrength$.pipe(
       first((passwordStrength) => passwordStrength !== null),
       map((passwordStrength) =>
-        passwordStrength && passwordStrength.score < 3 ? { weak: true } : {},
+        passwordStrength && passwordStrength.score < 3 ? { weak: true } : null,
       ),
     );
   }
 
   public onSubmit(): void {
-    if (!this.form.valid) {
-      return;
-    }
-    this.signupService.signup(this.form.value).subscribe(
-      () => {
+    if (!this.form.valid) return;
+    this.signupService.signup(this.form.getRawValue()).subscribe({
+      complete: () => {
         this.submitProgress = 'success';
       },
-      () => {
+      error: () => {
         this.submitProgress = 'error';
       },
-    );
+    });
   }
 }
