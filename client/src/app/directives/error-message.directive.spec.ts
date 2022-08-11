@@ -1,6 +1,17 @@
-import { Component, Type } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  Component,
+  Type,
+} from '@angular/core';
+import {
+  ComponentFixture,
+  TestBed,
+} from '@angular/core/testing';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 
 import {
   dispatchFakeEvent,
@@ -33,7 +44,7 @@ describe('ErrorMessageDirective', () => {
       `,
     })
     class HostComponent {
-      public control = new FormControl(null, Validators.required);
+      public control = new FormControl<string>('', Validators.required);
     }
 
     beforeEach(async () => {
@@ -86,7 +97,7 @@ describe('ErrorMessageDirective', () => {
       `,
     })
     class HostComponent {
-      public control = new FormControl(null, Validators.required);
+      public control = new FormControl<string>('', Validators.required);
       public form = new FormGroup({ control: this.control });
     }
 

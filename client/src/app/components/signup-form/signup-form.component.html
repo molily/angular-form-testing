@@ -261,10 +261,18 @@
             <ng-container *ngIf="plan.value === PERSONAL"> Address line 1 </ng-container>
             <ng-container *ngIf="plan.value === BUSINESS"> Company </ng-container>
             <ng-container *ngIf="plan.value === NON_PROFIT"> Organization </ng-container>
-            <span *ngIf="plan.value !== PERSONAL" class="necessity-required" aria-hidden="true">
+            <span
+              *ngIf="plan.value !== PERSONAL"
+              class="necessity-required"
+              aria-hidden="true"
+            >
               required
             </span>
-            <span *ngIf="plan.value === PERSONAL" class="necessity-optional" aria-hidden="true">
+            <span
+              *ngIf="plan.value === PERSONAL"
+              class="necessity-optional"
+              aria-hidden="true"
+            >
               optional
             </span>
           </span>

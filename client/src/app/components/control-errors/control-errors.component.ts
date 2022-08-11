@@ -7,7 +7,12 @@ import {
   Optional,
   TemplateRef,
 } from '@angular/core';
-import { AbstractControl, ControlContainer, ValidationErrors } from '@angular/forms';
+import {
+  AbstractControl,
+  ControlContainer,
+  ValidationErrors,
+} from '@angular/forms';
+
 import { Subscription } from 'rxjs';
 import { startWith } from 'rxjs/operators';
 import { findFormControl } from 'src/app/util/findFormControl';
@@ -52,11 +57,9 @@ export class ControlErrorsComponent implements OnInit, OnDestroy {
     );
     this.internalControl = control;
 
-    this.subscription = control.statusChanges
-      .pipe(startWith('PENDING'))
-      .subscribe((status) => {
-        this.updateTemplateContext();
-      });
+    this.subscription = control.statusChanges.pipe(startWith('PENDING')).subscribe(() => {
+      this.updateTemplateContext();
+    });
   }
 
   private updateTemplateContext(): void {

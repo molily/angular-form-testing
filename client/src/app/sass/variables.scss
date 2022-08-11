@@ -1,3 +1,9 @@
+$background-color-light: #fdfdfd;
+$text-color-light: black;
+
+$background-color-dark: #202020;
+$text-color-dark: #fdfdfd;
+
 $primary-color: #1976d2;
 
 $field-border-light: #486684;
@@ -9,8 +15,10 @@ $field-border-selected-dark: $field-border-dark;
 $field-background-light: #f5f5fa;
 $field-background-dark: #2a2a2a;
 
+$field-text-selected-light: $text-color-light;
 $field-background-selected-light: #eaeaff;
-$field-background-selected-dark: #b0b0b0;
+$field-text-selected-dark: $field-background-dark;
+$field-background-selected-dark: #bababa;
 
 $success-color-light: green;
 $success-color-dark: chartreuse;
