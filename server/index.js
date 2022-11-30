@@ -17,7 +17,8 @@ const PORT = process.env.PORT || 3000;
  * Copyright Google LLC All Rights Reserved.
  * MIT-style license: https://angular.io/license
  */
-const EMAIL_REGEXP = /^(?=.{1,254}$)(?=.{1,64}@)[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+const EMAIL_REGEXP =
+  /^(?=.{1,254}$)(?=.{1,64}@)[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
 const USERNAME_REGEXP = /^[a-zA-Z0-9.]+$/;
 
 /**
@@ -65,9 +66,15 @@ const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100,
   standardHeaders: false,
-	legacyHeaders: false,
+  legacyHeaders: false,
 });
 app.use(apiLimiter);
+
+app.get('/', (_req, res) => {
+  res.send(
+    '<!DOCTYPE html><meta name="robots" content="noindex,nofollow"><title>It works</title>It works',
+  );
+});
 
 app.post('/password-strength', (req, res) => {
   const { password } = req.body;
